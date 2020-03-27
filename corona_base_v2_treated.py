@@ -86,8 +86,8 @@ _namespace = {
     'production volume phase2': 'production_volume_phase2',
     'production volume phase3': 'production_volume_phase3',
     'productivity index': 'productivity_index',
-    'quarantine duration': 'quarantine_duration',
-    'quarantined critical case rate': 'quarantined_critical_case_rate',
+    'isolation duration': 'isolation_duration',
+    'isolated critical case rate': 'isolated_critical_case_rate',
     'quarantined effectiveness': 'quarantined_effectiveness',
     'quarantined productivity factor': 'quarantined_productivity_factor',
     'Recovered': 'recovered',
@@ -361,7 +361,7 @@ def contacts_per_person_symptomatic():
 def critical_cases():
     """
     Real Name: b'Critical Cases'
-    Original Eqn: b'INTEG ( infected critical case rate-critical cases recovery rate-death rate+quarantined critical case rate\\\\ , init Critical Cases)'
+    Original Eqn: b'INTEG ( infected critical case rate-critical cases recovery rate-death rate+isolated critical case rate\\\\ , init Critical Cases)'
     Units: b'person'
     Limits: (None, None)
     Type: component
@@ -814,7 +814,7 @@ def init_workforce():
 def isolated():
     """
     Real Name: b'Isolated'
-    Original Eqn: b'INTEG ( isolation rate symptomatic+isolation rate asymptomatic-isolated recovery rate-quarantined critical case rate\\\\ , init Isolated)'
+    Original Eqn: b'INTEG ( isolation rate symptomatic+isolation rate asymptomatic-isolated recovery rate-isolated critical case rate\\\\ , init Isolated)'
     Units: b'person'
     Limits: (None, None)
     Type: component
@@ -828,14 +828,14 @@ def isolated():
 def isolated_recovery_rate():
     """
     Real Name: b'isolated recovery rate'
-    Original Eqn: b'Isolated*(1-fraction of critical cases)/quarantine duration'
+    Original Eqn: b'Isolated*(1-fraction of critical cases)/isolation duration'
     Units: b'person/Day'
     Limits: (None, None)
     Type: component
 
     b''
     """
-    return isolated() * (1 - fraction_of_critical_cases()) / quarantine_duration()
+    return isolated() * (1 - fraction_of_critical_cases()) / isolation_duration()
 
 
 @cache('step')
@@ -1128,9 +1128,9 @@ def productivity_index():
 
 
 @cache('run')
-def quarantine_duration():
+def isolation_duration():
     """
-    Real Name: b'quarantine duration'
+    Real Name: b'isolation duration'
     Original Eqn: b'14'
     Units: b'Day'
     Limits: (None, None)
@@ -1142,9 +1142,9 @@ def quarantine_duration():
 
 
 @cache('step')
-def quarantined_critical_case_rate():
+def isolated_critical_case_rate():
     """
-    Real Name: b'quarantined critical case rate'
+    Real Name: b'isolated critical case rate'
     Original Eqn: b'Isolated*fraction of critical cases/symptomatic duration'
     Units: b'person/Day'
     Limits: (None, None)
@@ -1478,7 +1478,7 @@ _integ_available_test_kits = functions.Integ(lambda: produced_test_kits() - used
 
 _integ_critical_cases = functions.Integ(
     lambda: infected_critical_case_rate() - critical_cases_recovery_rate() - death_rate() +
-    quarantined_critical_case_rate(), lambda: init_critical_cases())
+    isolated_critical_case_rate(), lambda: init_critical_cases())
 
 _integ_diseased = functions.Integ(lambda: death_rate(), lambda: init_diseased())
 
@@ -1493,7 +1493,7 @@ _integ_infected_symptomatic = functions.Integ(
 
 _integ_isolated = functions.Integ(
     lambda: isolation_rate_symptomatic() + isolation_rate_asymptomatic() - isolated_recovery_rate(
-    ) - quarantined_critical_case_rate(), lambda: init_isolated())
+    ) - isolated_critical_case_rate(), lambda: init_isolated())
 
 _integ_recovered = functions.Integ(
     lambda: critical_cases_recovery_rate() + infected_asymptomatic_recovery_rate(
