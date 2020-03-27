@@ -9,6 +9,17 @@ currently two policies are available (social distancing and self quarantine) tha
 social distancing impacts the normal contacts (for everyone), self quarantine impacts the symptomatic
 
 SWITCH = 1 means the policy is activated
+
 start = day when the policy is implemented
+
 effectiveness = by how much the contacts per day are reduced
 
+to use the model:
+
+clone repository
+
+install packages (most of them are standard, pysd needs to be installed from pip (pip install pysd)
+
+run model.py
+
+settings for the model can be adjusted by changing the .csv files in the settings folder
