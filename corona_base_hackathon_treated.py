@@ -1,5 +1,5 @@
 """
-Python model "corona_base_v2_treated.py"
+Python model "corona_base_hackathon_treated.py"
 Translated using PySD version 0.10.0
 """
 from __future__ import division
@@ -19,13 +19,10 @@ _namespace = {
     'total infected': 'total_infected',
     'infected symptomatic recovery rate': 'infected_symptomatic_recovery_rate',
     'infected asymptomatic recovery rate': 'infected_asymptomatic_recovery_rate',
-    'accumulated loss of productivity': 'accumulated_loss_of_productivity',
-    'actual productivity': 'actual_productivity',
     'asymptomatic duration': 'asymptomatic_duration',
     'available test kits': 'available_test_kits',
     'available test kits for testing asymptomatic': 'available_test_kits_for_testing_asymptomatic',
     'available test kits for testing symptomatic': 'available_test_kits_for_testing_symptomatic',
-    'base productivity factor': 'base_productivity_factor',
     'contact infectivity asymptomatic': 'contact_infectivity_asymptomatic',
     'contact infectivity quarantine': 'contact_infectivity_quarantine',
     'contact infectivity symptomatic': 'contact_infectivity_symptomatic',
@@ -46,24 +43,19 @@ _namespace = {
     '"Infected (asymptomatic)"': 'infected_asymptomatic',
     '"Infected (symptomatic)"': 'infected_symptomatic',
     'infected critical case rate': 'infected_critical_case_rate',
-    'infected productivity factor': 'infected_productivity_factor',
     'infection rate': 'infection_rate',
     'infection rate asymptomatic': 'infection_rate_asymptomatic',
     'infection rate quarantined': 'infection_rate_quarantined',
     'infection rate symptomatic': 'infection_rate_symptomatic',
     'infectivity per contact': 'infectivity_per_contact',
-    'init accumulated loss of producitivity': 'init_accumulated_loss_of_producitivity',
     'init available test kits': 'init_available_test_kits',
     'init Critical Cases': 'init_critical_cases',
     'init Diseased': 'init_diseased',
     'init Infected asymptomatic': 'init_infected_asymptomatic',
     'init Infected symptomatic': 'init_infected_symptomatic',
     'init Isolated': 'init_isolated',
-    'init productivity': 'init_productivity',
     'init Recovered': 'init_recovered',
     'init Susceptible': 'init_susceptible',
-    'init total pop': 'init_total_pop',
-    'init workforce': 'init_workforce',
     'Isolated': 'isolated',
     'isolated recovery rate': 'isolated_recovery_rate',
     'isolation rate asymptomatic': 'isolation_rate_asymptomatic',
@@ -72,9 +64,7 @@ _namespace = {
     'kits per person': 'kits_per_person',
     'kits population ratio': 'kits_population_ratio',
     'max kits population ratio': 'max_kits_population_ratio',
-    'new loss': 'new_loss',
     'non controlled population': 'non_controlled_population',
-    'percentage workforce': 'percentage_workforce',
     'produced test kits': 'produced_test_kits',
     'production phase1': 'production_phase1',
     'production phase2': 'production_phase2',
@@ -85,11 +75,9 @@ _namespace = {
     'production volume phase1': 'production_volume_phase1',
     'production volume phase2': 'production_volume_phase2',
     'production volume phase3': 'production_volume_phase3',
-    'productivity index': 'productivity_index',
     'isolation duration': 'isolation_duration',
     'isolated critical case rate': 'isolated_critical_case_rate',
-    'quarantined effectiveness': 'quarantined_effectiveness',
-    'quarantined productivity factor': 'quarantined_productivity_factor',
+    'isolation effectiveness': 'isolation_effectiveness',
     'Recovered': 'recovered',
     'self quarantine effectiveness': 'self_quarantine_effectiveness',
     'self quarantine policy': 'self_quarantine_policy',
@@ -104,7 +92,6 @@ _namespace = {
     'symptomatic rate': 'symptomatic_rate',
     'testing duration': 'testing_duration',
     'tests for symptomatic': 'tests_for_symptomatic',
-    'time unit': 'time_unit',
     'used test kits': 'used_test_kits',
     'FINAL TIME': 'final_time',
     'INITIAL TIME': 'initial_time',
@@ -183,36 +170,6 @@ def infected_asymptomatic_recovery_rate():
         asymptomatic_duration() + symptomatic_duration())
 
 
-@cache('step')
-def accumulated_loss_of_productivity():
-    """
-    Real Name: b'accumulated loss of productivity'
-    Original Eqn: b'INTEG ( new loss, init accumulated loss of producitivity)'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return _integ_accumulated_loss_of_productivity()
-
-
-@cache('step')
-def actual_productivity():
-    """
-    Real Name: b'actual productivity'
-    Original Eqn: b'((Recovered+Susceptible+"Infected (asymptomatic)")*base productivity factor+Isolated\\\\ *quarantined productivity factor+"Infected (symptomatic)"* infected productivity factor)*percentage workforce'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return ((recovered() + susceptible() + infected_asymptomatic()) * base_productivity_factor() +
-            isolated() * quarantined_productivity_factor() +
-            infected_symptomatic() * infected_productivity_factor()) * percentage_workforce()
-
-
 @cache('run')
 def asymptomatic_duration():
     """
@@ -269,20 +226,6 @@ def available_test_kits_for_testing_symptomatic():
     return np.maximum(available_test_kits(), 0)
 
 
-@cache('run')
-def base_productivity_factor():
-    """
-    Real Name: b'base productivity factor'
-    Original Eqn: b'1'
-    Units: b'dmnl/person'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 1
-
-
 @cache('step')
 def contact_infectivity_asymptomatic():
     """
@@ -303,14 +246,14 @@ def contact_infectivity_asymptomatic():
 def contact_infectivity_quarantine():
     """
     Real Name: b'contact infectivity quarantine'
-    Original Eqn: b'contact infectivity asymptomatic*(1-quarantined effectiveness)'
+    Original Eqn: b'contact infectivity asymptomatic*(1-isolation effectiveness)'
     Units: b'1/Day'
     Limits: (None, None)
     Type: component
 
     b''
     """
-    return contact_infectivity_asymptomatic() * (1 - quarantined_effectiveness())
+    return contact_infectivity_asymptomatic() * (1 - isolation_effectiveness())
 
 
 @cache('step')
@@ -554,20 +497,6 @@ def infected_critical_case_rate():
     return infected_symptomatic() * fraction_of_critical_cases() / symptomatic_duration()
 
 
-@cache('run')
-def infected_productivity_factor():
-    """
-    Real Name: b'infected productivity factor'
-    Original Eqn: b'0.5'
-    Units: b'dmnl/person'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 0.5
-
-
 @cache('step')
 def infection_rate():
     """
@@ -640,20 +569,6 @@ def infectivity_per_contact():
     b''
     """
     return 0.0125
-
-
-@cache('run')
-def init_accumulated_loss_of_producitivity():
-    """
-    Real Name: b'init accumulated loss of producitivity'
-    Original Eqn: b'0'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 0
 
 
 @cache('run')
@@ -740,20 +655,6 @@ def init_isolated():
     return 0
 
 
-@cache('step')
-def init_productivity():
-    """
-    Real Name: b'init productivity'
-    Original Eqn: b'base productivity factor*init workforce'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return base_productivity_factor() * init_workforce()
-
-
 @cache('run')
 def init_recovered():
     """
@@ -780,34 +681,6 @@ def init_susceptible():
     b''
     """
     return 8e+06
-
-
-@cache('step')
-def init_total_pop():
-    """
-    Real Name: b'init total pop'
-    Original Eqn: b'init Infected symptomatic+init Susceptible'
-    Units: b'person'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return init_infected_symptomatic() + init_susceptible()
-
-
-@cache('step')
-def init_workforce():
-    """
-    Real Name: b'init workforce'
-    Original Eqn: b'init total pop*percentage workforce'
-    Units: b'person'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return init_total_pop() * percentage_workforce()
 
 
 @cache('step')
@@ -925,20 +798,6 @@ def max_kits_population_ratio():
 
 
 @cache('step')
-def new_loss():
-    """
-    Real Name: b'new loss'
-    Original Eqn: b'(1-productivity index)/time unit'
-    Units: b'dmnl/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return (1 - productivity_index()) / time_unit()
-
-
-@cache('step')
 def non_controlled_population():
     """
     Real Name: b'non controlled population'
@@ -951,20 +810,6 @@ def non_controlled_population():
     """
     return infected_symptomatic() + susceptible() + infected_asymptomatic() + isolated(
     ) + recovered()
-
-
-@cache('run')
-def percentage_workforce():
-    """
-    Real Name: b'percentage workforce'
-    Original Eqn: b'0.8'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 0.8
 
 
 @cache('step')
@@ -1113,20 +958,6 @@ def production_volume_phase3():
     return 10000
 
 
-@cache('step')
-def productivity_index():
-    """
-    Real Name: b'productivity index'
-    Original Eqn: b'actual productivity/init productivity'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return actual_productivity() / init_productivity()
-
-
 @cache('run')
 def isolation_duration():
     """
@@ -1156,9 +987,9 @@ def isolated_critical_case_rate():
 
 
 @cache('run')
-def quarantined_effectiveness():
+def isolation_effectiveness():
     """
-    Real Name: b'quarantined effectiveness'
+    Real Name: b'isolation effectiveness'
     Original Eqn: b'0.9'
     Units: b'dmnl'
     Limits: (None, None)
@@ -1167,20 +998,6 @@ def quarantined_effectiveness():
     b''
     """
     return 0.9
-
-
-@cache('run')
-def quarantined_productivity_factor():
-    """
-    Real Name: b'quarantined productivity factor'
-    Original Eqn: b'0.75'
-    Units: b'dmnl/person'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 0.75
 
 
 @cache('step')
@@ -1385,20 +1202,6 @@ def tests_for_symptomatic():
                       infected_symptomatic() * kits_per_person())
 
 
-@cache('run')
-def time_unit():
-    """
-    Real Name: b'time unit'
-    Original Eqn: b'1'
-    Units: b'Day'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 1
-
-
 @cache('step')
 def used_test_kits():
     """
@@ -1469,9 +1272,6 @@ def time_step():
     """
     return 0.015625
 
-
-_integ_accumulated_loss_of_productivity = functions.Integ(
-    lambda: new_loss(), lambda: init_accumulated_loss_of_producitivity())
 
 _integ_available_test_kits = functions.Integ(lambda: produced_test_kits() - used_test_kits(),
                                              lambda: init_available_test_kits())

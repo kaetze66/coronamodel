@@ -3,43 +3,37 @@ from pathlib import Path
 from pysd.py_backend.functions import Model
 import matplotlib.pyplot as plt
 import pandas as pd
+import shutil
 
 #handling the paths and the model
 path = Path.cwd()
-model = Model('corona_base_v2_treated.py')
+model = Model('corona_base_hackathon_treated.py')
 out_path = path / 'output'
 set_path = path / 'settings'
-out_path.mkdir(exist_ok=True)
+try:
+    shutil.rmtree(out_path)
+except FileNotFoundError:
+    pass
+out_path.mkdir()
 
 #reading the settings
 policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0)
 time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
+init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
+model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
 
-time_params = {'INITIAL TIME': time_df.loc['INITIAL TIME'][0],'FINAL TIME': time_df.loc['FINAL TIME'][0], 'SAVEPER': time_df.loc['SAVEPER'][0]}
+time_lst = ['INITIAL TIME', 'FINAL TIME', 'SAVEPER']
 
-model.set_components(params=time_params)
+init_lst = ['init Critical Cases', 'init Diseased',
+            'init Infected asymptomatic', 'init Infected symptomatic',
+            'init Isolated', 'init Recovered', 'init Susceptible',
+            'init available test kits'
+            ]
 
-# current policies available are: self quarantine, social distancing
-
-pol_dict = {}
-#list is SWITCH, start, effectiveness
-pol_dict['self quarantine'] = policy_df.loc['self quarantine'].tolist()
-pol_dict['social distancing'] = policy_df.loc['social distancing'].tolist()
-
-base_df = model.run()
-base_df.to_csv(out_path / '00_base_results.csv')
-
-pol_params = {'self quarantine policy SWITCH': pol_dict['self quarantine'][0],
-              'self quarantine start': pol_dict['self quarantine'][1],
-              'self quarantine effectiveness': pol_dict['self quarantine'][2],
-              'social distancing policy SWITCH': pol_dict['social distancing'][0],
-              'social distancing start': pol_dict['social distancing'][1],
-              'social distancing effectiveness': pol_dict['social distancing'][2],
-              }
-
-pol_df = model.run(params=pol_params)
-out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
-out_df.to_csv(out_path / '00_full_results.csv')
+model_lst = ['asymptomatic duration', 'contacts per person normal', 'contacts per person symptomatic',
+             'duration of treatment', 'fraction of asymptomatic case development', 'fraction of critical cases',
+             'fraction of death', 'immunity time', 'infectivity per contact', 'isolation duration',
+             'isolation effectiveness', 'symptomatic duration']
 
 #stocks are sinks that accumulate over time
 stock_lst = ['"Infected (asymptomatic)"', '"Infected (symptomatic)"', 'Critical Cases', 'Diseased',
@@ -52,6 +46,54 @@ flow_lst = ['critical cases recovery rate', 'death rate', 'deimmunization rate',
             'infection rate quarantined', 'infection rate symptomatic',
             'isolated recovery rate', 'isolation rate asymptomatic', 'isolation rate symptomatic',
             'isolated critical case rate', 'symptomatic rate']
+
+endo_lst = ['contact infectivity asymptomatic', 'contact infectivity quarantine', 'contact infectivity symptomatic',
+            'fraction of symptomatic', 'non controlled population']
+
+output_lst = []
+output_lst.extend(stock_lst)
+output_lst.extend(flow_lst)
+output_lst.extend(endo_lst)
+#updating the time settings
+
+time_params = {}
+for cond in time_lst:
+    time_params[cond] = time_df.loc[cond][0]
+model.set_components(params=time_params)
+
+
+#updating the initial conditions
+init_params = {}
+for cond in init_lst:
+    init_params[cond] = init_df.loc[cond][0]
+model.set_components(params=init_params)
+
+#updating the model parameters
+model_params = {}
+for var in model_lst:
+    model_params[var] = model_df.loc[var]['settings']
+model.set_components(params=model_params)
+
+# current policies available are: self quarantine, social distancing
+pol_dict = {}
+#list is SWITCH, start, effectiveness
+pol_dict['self quarantine'] = policy_df.loc['self quarantine'].tolist()
+pol_dict['social distancing'] = policy_df.loc['social distancing'].tolist()
+
+base_df = model.run(return_columns=output_lst)
+base_df.to_csv(out_path / '00_base_results.csv')
+
+pol_params = {'self quarantine policy SWITCH': pol_dict['self quarantine'][0],
+              'self quarantine start': pol_dict['self quarantine'][1],
+              'self quarantine effectiveness': pol_dict['self quarantine'][2],
+              'social distancing policy SWITCH': pol_dict['social distancing'][0],
+              'social distancing start': pol_dict['social distancing'][1],
+              'social distancing effectiveness': pol_dict['social distancing'][2],
+              }
+
+pol_df = model.run(params=pol_params,return_columns=output_lst)
+out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
+out_df.to_csv(out_path / '00_full_results.csv')
 
 for stock in stock_lst:
     df = out_df.loc(axis=1)[:,stock]
@@ -70,4 +112,8 @@ for flow in flow_lst:
     ax.set_ylabel('person/day')
     plt.savefig(out_path.joinpath('02_%s.png' % flow.replace('"','')))
     plt.close()
+
+
+
+
 

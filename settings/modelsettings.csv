@@ -1,0 +1,13 @@
+,settings,unit
+asymptomatic duration,5,days
+contacts per person normal,30,contacts
+contacts per person symptomatic,15,contacts
+duration of treatment,10,days
+fraction of asymptomatic case development,0.5,percentage
+fraction of critical cases,0.1,percentage
+fraction of death,0.4,percentage
+immunity time,360,days
+infectivity per contact,0.0125,percentage
+isolation duration,14,days
+isolation effectiveness,0.9,percentage
+symptomatic duration,5,days
