@@ -15,7 +15,7 @@ out_path.mkdir(exist_ok=True)
 policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0)
 time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
 
-time_params = {'INITIAL TIME': time_df['INITIAL TIME'][0],'FINAL TIME': time_df['FINAL TIME'][0], 'SAVEPER': time_df['SAVEPER'][0]}
+time_params = {'INITIAL TIME': time_df.loc['INITIAL TIME'][0],'FINAL TIME': time_df.loc['FINAL TIME'][0], 'SAVEPER': time_df.loc['SAVEPER'][0]}
 
 model.set_components(params=time_params)
 

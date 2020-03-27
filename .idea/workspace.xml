@@ -1,39 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="798fe648-118b-4bb7-8c3c-5f0ae4c2de23" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/settings/policy.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings/timesettings.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/varlist" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/coronamodel.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/coronamodel.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/00_results.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Critical Cases.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Critical Cases.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Diseased.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Diseased.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Infected (asymptomatic).png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Infected (asymptomatic).png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Infected (symptomatic).png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Infected (symptomatic).png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Isolated.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Isolated.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Recovered.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Recovered.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_Susceptible.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_Susceptible.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_total infected.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/01_total infected.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_critical cases recovery rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_critical cases recovery rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_death rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_death rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_deimmunization rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_deimmunization rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infected asymptomatic recovery rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infected asymptomatic recovery rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infected critical case rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infected critical case rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infected symptomatic recovery rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infected symptomatic recovery rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infection rate asymptomatic.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infection rate asymptomatic.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infection rate quarantined.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infection rate quarantined.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infection rate symptomatic.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infection rate symptomatic.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_infection rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_infection rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_isolated critical case rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_isolated critical case rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_isolated recovery rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_isolated recovery rate.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_isolation rate asymptomatic.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_isolation rate asymptomatic.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_isolation rate symptomatic.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_isolation rate symptomatic.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/02_symptomatic rate.png" beforeDir="false" afterPath="$PROJECT_DIR$/output/02_symptomatic rate.png" afterDir="false" />
-    </list>
+    <list default="true" id="798fe648-118b-4bb7-8c3c-5f0ae4c2de23" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -116,7 +84,7 @@
       <option name="presentableId" value="Default" />
       <updated>1585304832791</updated>
       <workItem from="1585304833983" duration="566000" />
-      <workItem from="1585305684383" duration="13277000" />
+      <workItem from="1585305684383" duration="13773000" />
     </task>
     <servers />
   </component>
@@ -141,6 +109,6 @@
     </ignored-roots>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/coronamodel$model.coverage" NAME="model Coverage Results" MODIFIED="1585320938200" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/coronamodel$model.coverage" NAME="model Coverage Results" MODIFIED="1585323129981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
