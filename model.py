@@ -3,7 +3,7 @@ from pathlib import Path
 from pysd.py_backend.functions import Model
 import matplotlib.pyplot as plt
 import pandas as pd
-import shutil
+import varcontrol
 
 #handling the paths and the model
 path = Path.cwd()
@@ -11,10 +11,12 @@ model = Model('corona_base_hackathon_treated.py')
 out_path = path / 'output'
 set_path = path / 'settings'
 try:
-    shutil.rmtree(out_path)
+    file_lst = list(out_path.glob('*'))
+    for file in file_lst:
+        file.unlink()
 except FileNotFoundError:
     pass
-out_path.mkdir()
+out_path.mkdir(exist_ok=True)
 
 #reading the settings
 policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0)
@@ -22,33 +24,18 @@ time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
 init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
 model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
 
-time_lst = ['INITIAL TIME', 'FINAL TIME', 'SAVEPER']
+time_lst = varcontrol.time_lst
 
-init_lst = ['init Critical Cases', 'init Diseased',
-            'init Infected asymptomatic', 'init Infected symptomatic',
-            'init Isolated', 'init Recovered', 'init Susceptible',
-            'init available test kits'
-            ]
+init_lst = varcontrol.init_lst
 
-model_lst = ['asymptomatic duration', 'contacts per person normal', 'contacts per person symptomatic',
-             'duration of treatment', 'fraction of asymptomatic case development', 'fraction of critical cases',
-             'fraction of death', 'immunity time', 'infectivity per contact', 'isolation duration',
-             'isolation effectiveness', 'symptomatic duration']
+model_lst = varcontrol.model_lst
 
 #stocks are sinks that accumulate over time
-stock_lst = ['"Infected (asymptomatic)"', '"Infected (symptomatic)"', 'Critical Cases', 'Diseased',
-             'Susceptible', 'Isolated', 'Recovered', 'total infected']
+stock_lst = varcontrol.stock_lst
 #flows are the rates at which persons flow between the stocks
-flow_lst = ['critical cases recovery rate', 'death rate', 'deimmunization rate',
-            'infected asymptomatic recovery rate', 'infected critical case rate',
-            'infected symptomatic recovery rate',
-            'infection rate', 'infection rate asymptomatic',
-            'infection rate quarantined', 'infection rate symptomatic',
-            'isolated recovery rate', 'isolation rate asymptomatic', 'isolation rate symptomatic',
-            'isolated critical case rate', 'symptomatic rate']
+flow_lst = varcontrol.flow_lst
 
-endo_lst = ['contact infectivity asymptomatic', 'contact infectivity quarantine', 'contact infectivity symptomatic',
-            'fraction of symptomatic', 'non controlled population']
+endo_lst = varcontrol.endo_lst
 
 output_lst = []
 output_lst.extend(stock_lst)

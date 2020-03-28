@@ -15,6 +15,14 @@ _subscript_dict = {}
 _namespace = {
     'TIME': 'time',
     'Time': 'time',
+    'accumulated cases': 'accumulated_cases',
+    'init total population': 'init_total_population',
+    'incidence per 100000': 'incidence_per_100000',
+    'new cases': 'new_cases',
+    'init accumulated cases': 'init_accumulated_cases',
+    'case fatality rate': 'case_fatality_rate',
+    'test fraction': 'test_fraction',
+    'isolation rate asymptomatic': 'isolation_rate_asymptomatic',
     'fraction of symptomatic': 'fraction_of_symptomatic',
     'total infected': 'total_infected',
     'infected symptomatic recovery rate': 'infected_symptomatic_recovery_rate',
@@ -58,7 +66,6 @@ _namespace = {
     'init Susceptible': 'init_susceptible',
     'Isolated': 'isolated',
     'isolated recovery rate': 'isolated_recovery_rate',
-    'isolation rate asymptomatic': 'isolation_rate_asymptomatic',
     'isolation rate symptomatic': 'isolation_rate_symptomatic',
     'kits availability for testing table': 'kits_availability_for_testing_table',
     'kits per person': 'kits_per_person',
@@ -111,6 +118,121 @@ def _init_outer_references(data):
 
 def time():
     return __data['time']()
+
+
+@cache('step')
+def accumulated_cases():
+    """
+    Real Name: b'accumulated cases'
+    Original Eqn: b'INTEG ( new cases, init accumulated cases)'
+    Units: b'person'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return _integ_accumulated_cases()
+
+
+@cache('step')
+def init_total_population():
+    """
+    Real Name: b'init total population'
+    Original Eqn: b'init Infected asymptomatic+init Susceptible'
+    Units: b'person'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return init_infected_asymptomatic() + init_susceptible()
+
+
+@cache('step')
+def incidence_per_100000():
+    """
+    Real Name: b'incidence per 100000'
+    Original Eqn: b'accumulated cases/init total population*100000'
+    Units: b'dmnl'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return accumulated_cases() / init_total_population() * 100000
+
+
+@cache('step')
+def new_cases():
+    """
+    Real Name: b'new cases'
+    Original Eqn: b'symptomatic rate*test fraction'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return symptomatic_rate() * test_fraction()
+
+
+@cache('run')
+def init_accumulated_cases():
+    """
+    Real Name: b'init accumulated cases'
+    Original Eqn: b'0'
+    Units: b'person'
+    Limits: (None, None)
+    Type: constant
+
+    b''
+    """
+    return 0
+
+
+@cache('step')
+def case_fatality_rate():
+    """
+    Real Name: b'case fatality rate'
+    Original Eqn: b'ZIDZ( Diseased, accumulated cases)'
+    Units: b'dmnl'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return functions.zidz(diseased(), accumulated_cases())
+
+
+@cache('run')
+def test_fraction():
+    """
+    Real Name: b'test fraction'
+    Original Eqn: b'1'
+    Units: b'dmnl'
+    Limits: (None, None)
+    Type: constant
+
+    b''
+    """
+    return 1
+
+
+@cache('step')
+def isolation_rate_asymptomatic():
+    """
+    Real Name: b'isolation rate asymptomatic'
+    Original Eqn: b'MIN(available test kits for testing asymptomatic*effect of kits availability on effectiveness of testing\\\\ /kits per person, "Infected (asymptomatic)" )/testing duration'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return np.minimum(
+        available_test_kits_for_testing_asymptomatic() *
+        effect_of_kits_availability_on_effectiveness_of_testing() / kits_per_person(),
+        infected_asymptomatic()) / testing_duration()
 
 
 @cache('step')
@@ -712,23 +834,6 @@ def isolated_recovery_rate():
 
 
 @cache('step')
-def isolation_rate_asymptomatic():
-    """
-    Real Name: b'isolation rate asymptomatic'
-    Original Eqn: b'MIN(available test kits for testing asymptomatic*effect of kits availability on effectiveness of testing\\\\ , "Infected (asymptomatic)")/testing duration'
-    Units: b'person/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return np.minimum(
-        available_test_kits_for_testing_asymptomatic() *
-        effect_of_kits_availability_on_effectiveness_of_testing(),
-        infected_asymptomatic()) / testing_duration()
-
-
-@cache('step')
 def isolation_rate_symptomatic():
     """
     Real Name: b'isolation rate symptomatic'
@@ -1091,7 +1196,7 @@ def social_distancing_policy():
     """
     Real Name: b'social distancing policy'
     Original Eqn: b'1-PULSE(social distancing start, FINAL TIME-social distancing start+1)*social distancing effectiveness'
-    Units: b''
+    Units: b'dmnl'
     Limits: (None, None)
     Type: component
 
@@ -1221,14 +1326,14 @@ def used_test_kits():
 def final_time():
     """
     Real Name: b'FINAL TIME'
-    Original Eqn: b'1080'
+    Original Eqn: b'360'
     Units: b'Day'
     Limits: (None, None)
     Type: constant
 
     b''
     """
-    return 1080
+    return 360
 
 
 @cache('run')
@@ -1272,6 +1377,8 @@ def time_step():
     """
     return 0.015625
 
+
+_integ_accumulated_cases = functions.Integ(lambda: new_cases(), lambda: init_accumulated_cases())
 
 _integ_available_test_kits = functions.Integ(lambda: produced_test_kits() - used_test_kits(),
                                              lambda: init_available_test_kits())

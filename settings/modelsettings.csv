@@ -11,3 +11,4 @@ infectivity per contact,0.0125,percentage
 isolation duration,14,days
 isolation effectiveness,0.9,percentage
 symptomatic duration,5,days
+test fraction,1,percentage

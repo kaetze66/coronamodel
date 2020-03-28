@@ -8,3 +8,4 @@ init Infected symptomatic,0
 init Recovered,0
 init available test kits,0
 init Susceptible,8000000
+init accumulated cases,0
