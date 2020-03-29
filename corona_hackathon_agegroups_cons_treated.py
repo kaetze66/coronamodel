@@ -1023,7 +1023,6 @@ _namespace = {
     'new cases': 'new_cases',
     'init accumulated cases': 'init_accumulated_cases',
     'case fatality rate': 'case_fatality_rate',
-    'test fraction': 'test_fraction',
     'isolation rate asymptomatic': 'isolation_rate_asymptomatic',
     'fraction of symptomatic': 'fraction_of_symptomatic',
     'total infected': 'total_infected',
@@ -15802,28 +15801,31 @@ def incidence_per_100000():
 def new_cases():
     """
     Real Name: b'new cases'
-    Original Eqn: b'symptomatic rate*test fraction'
+    Original Eqn: b'new cases 80 +new cases 70 +new cases 60 +new cases 50 +new cases 40 +new cases 30 +new cases 20 +new cases 10 +new cases 00'
     Units: b'person/Day'
     Limits: (None, None)
     Type: component
 
     b''
     """
-    return symptomatic_rate() * test_fraction()
+    return new_cases_80() + new_cases_70() + new_cases_60() + new_cases_50() + new_cases_40(
+    ) + new_cases_30() + new_cases_20() + new_cases_10() + new_cases_00()
 
 
-@cache('run')
+@cache('step')
 def init_accumulated_cases():
     """
     Real Name: b'init accumulated cases'
-    Original Eqn: b'0'
+    Original Eqn: b'init accumulated cases 80 +init accumulated cases 70 +init accumulated cases 60 +init accumulated cases 50 +init accumulated cases 40 +init accumulated cases 30 +init accumulated cases 20 +init accumulated cases 10 +init accumulated cases 00'
     Units: b'person'
     Limits: (None, None)
-    Type: constant
+    Type: component
 
     b''
     """
-    return 0
+    return init_accumulated_cases_80() + init_accumulated_cases_70() + init_accumulated_cases_60(
+    ) + init_accumulated_cases_50() + init_accumulated_cases_40() + init_accumulated_cases_30(
+    ) + init_accumulated_cases_20() + init_accumulated_cases_10() + init_accumulated_cases_00()
 
 
 @cache('step')
@@ -15838,20 +15840,6 @@ def case_fatality_rate():
     b''
     """
     return functions.zidz(diseased(), accumulated_cases())
-
-
-@cache('run')
-def test_fraction():
-    """
-    Real Name: b'test fraction'
-    Original Eqn: b'1'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: constant
-
-    b''
-    """
-    return 1
 
 
 @cache('step')

@@ -4,7 +4,7 @@ import pandas as pd
 from pathlib import Path
 from pysd.py_backend.functions import Model
 
-age_groups = ['80','70']
+age_groups = ['80','70', '60', '50', '40', '30', '20', '10', '00']
 
 # Time list is fix and won't change
 time_lst = ['INITIAL TIME', 'FINAL TIME', 'SAVEPER']
@@ -34,10 +34,14 @@ def agify_model():
     out_lst = []
     for el in model_lst:
         # this needs to be added for the moment because we have both models mixed
-        out_lst.append(el)
-        for group in age_groups:
-            item = '%s %s' % (el,group)
-            out_lst.append(item)
+        #out_lst.append(el)
+        # these variables stay the same for all age groups
+        if el not in ['infectivity per contact']:
+            for group in age_groups:
+                item = '%s %s' % (el,group)
+                out_lst.append(item)
+        else:
+            out_lst.append(el)
     return out_lst
 
 #stock list needs to be updated and copied into the the model.py script
@@ -69,24 +73,28 @@ def agify_flow():
     out_lst = []
     for el in flow_lst:
         # this needs to be added for the moment because we have both models mixed
-        out_lst.append(el)
+        #out_lst.append(el)
         for group in age_groups:
             item = '%s %s' % (el,group)
             out_lst.append(item)
+        # these are the summary flows that are still in the model
+        out_lst.extend(['infection rate', 'new cases', 'isolation rate asymptomatic', 'infected symptomatic recovery rate', 'infected asymptomatic recovery rate', 'critical cases recovery rate', 'death rate', 'deimmunization rate', 'infected critical case rate', 'isolated recovery rate', 'isolation rate symptomatic', 'isolated critical case rate', 'symptomatic rate'])
     return out_lst
 
 #endo list needs to be updated and copied into the the model.py script
 endo_lst = ['contact infectivity asymptomatic self', 'contact infectivity quarantine self', 'contact infectivity symptomatic self',
             'fraction of symptomatic', 'non controlled population', 'incidence per 100000', 'case fatality rate', 'total infection rate', 'contacts per person symptomatic self',
-            'init total population']
+            'init total population', 'first infection']
 def agify_endo():
     out_lst = []
     for el in endo_lst:
         # this needs to be added for the moment because we have both models mixed
-        out_lst.append(el)
+        #out_lst.append(el)
         for group in age_groups:
             item = '%s %s' % (el,group)
             out_lst.append(item)
+        # these variables still exist in the summary model as endogenously calculated
+        out_lst.extend(['total infection rate', 'init total population', 'incidence per 100000', 'case fatality rate', 'fraction of symptomatic', 'non controlled population'])
     return out_lst
 
 #ignore params are varaibles that are currently not looked at but are in the model for further work
@@ -99,7 +107,7 @@ ignore_param_lst = ['available test kits', 'available test kits for testing asym
                     'production start phase1', 'production start phase2', 'production start phase3',
                     'production volume phase1', 'production volume phase2', 'production volume phase3',
                     'testing duration', 'tests for symptomatic', 'used test kits',
-                    'init available test kits', 'normal first infected', 'first infection']
+                    'init available test kits', 'normal first infected']
 
 #policy param variables are handled differently in the script and don't have to be copied
 policy_param_lst = ['self quarantine effectiveness', 'self quarantine policy',
@@ -111,7 +119,7 @@ def agify_policy():
     out_lst = []
     for el in policy_param_lst:
         # this needs to be added for the moment because we have both models mixed
-        out_lst.append(el)
+        #out_lst.append(el)
         for group in age_groups:
             item = '%s %s' % (el,group)
             out_lst.append(item)
@@ -123,7 +131,7 @@ def agify_infectioncontrol():
     out_lst = []
     for el in infection_control_lst:
         # this needs to be added for the moment because we have both models mixed
-        out_lst.append(el)
+        #out_lst.append(el)
         for group in age_groups:
             item = '%s %s' % (el,group)
             out_lst.append(item)
@@ -178,34 +186,61 @@ def run_varcontrol_age():
     var_lst = var_df.columns.tolist()
     print('Total number of variables:', len(var_lst))
 
+    full_var_lst = var_lst
+
+    sum_lst = []
+    sum_lst.extend(time_lst)
+    sum_lst.extend(ignore_lst)
+    sum_lst.extend(ignore_param_lst)
+
     #no need to agifiy
     var_lst = [v for v in var_lst if v not in time_lst]
     var_lst = [v for v in var_lst if v not in ignore_lst]
     var_lst = [v for v in var_lst if v not in ignore_param_lst]
     lst = agify_init()
+    sum_lst.extend(lst)
     var_lst = [v for v in var_lst if v not in lst]
     lst = agify_model()
+    sum_lst.extend(lst)
     var_lst = [v for v in var_lst if v not in lst]
     lst = agify_stock()
+    sum_lst.extend(lst)
     var_lst = [v for v in var_lst if v not in lst]
     lst = agify_flow()
+    sum_lst.extend(lst)
     var_lst = [v for v in var_lst if v not in lst]
     lst = agify_endo()
+    sum_lst.extend(lst)
     var_lst = [v for v in var_lst if v not in lst]
     lst = agify_policy()
+    sum_lst.extend(lst)
+    var_lst = [v for v in var_lst if v not in lst]
+    lst = agify_infectioncontrol()
+    sum_lst.extend(lst)
     var_lst = [v for v in var_lst if v not in lst]
 
-    combo_lst = ['70x80', '80x70']
+    combo_lst = []
+    for src in age_groups:
+        for dst in age_groups:
+            combo_lst.append('%sx%s' % (src,dst))
+
+    combo_rep_lst = [v for v in var_lst if v[-5:] in combo_lst]
+    sum_lst.extend(combo_rep_lst)
 
     var_lst = [v for v in var_lst if v[-5:] not in combo_lst]
+
+    overflow = [v for v in sum_lst if v not in full_var_lst]
+
+    print('Variables that are not in the model:', overflow)
+    print('Number of variables that are not in the model', len(overflow))
 
 
     print('Variables that are not sorted yet:', var_lst)
     print('Number of not sorted variables:', len(var_lst))
 
 if __name__ == '__main__':
-    run_varcontrol()
-    #run_varcontrol_age()
+    #run_varcontrol()
+    run_varcontrol_age()
 
 
 

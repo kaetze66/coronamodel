@@ -10,9 +10,12 @@ from pysd.py_backend.functions import Model
 import matplotlib.pyplot as plt
 import pandas as pd
 import varcontrol
+import time
+
+start = time.time()
 
 #handling the paths and the model
-model = Model('corona_base_hackathon_agegroups_treated.py')
+model = Model('corona_hackathon_agegroups_cons_treated.py')
 path = Path.cwd()
 out_path = path / 'output'
 set_path = path / 'settings'
@@ -30,6 +33,7 @@ time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
 init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
 model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
 contact_df = pd.read_csv(set_path / 'contacts.csv',index_col=0,header=0)
+control_df = pd.read_csv(set_path / 'infectioncontrol.csv',index_col=0)
 
 time_lst = varcontrol.time_lst
 
@@ -43,6 +47,8 @@ stock_lst = varcontrol.agify_stock()
 flow_lst = varcontrol.agify_flow()
 
 endo_lst = varcontrol.agify_endo()
+
+control_lst = varcontrol.agify_infectioncontrol()
 
 output_lst = []
 output_lst.extend(stock_lst)
@@ -61,6 +67,8 @@ init_params = {}
 for cond in init_lst:
     if cond[-2:] in varcontrol.age_groups:
         name, col = cond.rsplit(' ',1)
+        if col == '00':
+            col = '0'
         init_params[cond] = init_df.loc[name][col]
     else:
         init_params[cond] = init_df.loc[cond][0]
@@ -73,6 +81,8 @@ for var in model_lst:
         #infectivity per contact is run through all the model as the same variable
         if not var.startswith('infectivity per contact') or var.startswith('contacts per person normal'):
             name, col = var.rsplit(' ',1)
+            if col == '00':
+                col = '0'
             model_params[var] = model_df.loc[name][col]
     else:
         model_params[var] = model_df.loc[var]['settings']
@@ -81,68 +91,70 @@ model.set_components(params=model_params)
 
 contact_param = {}
 
-contact_param['contacts per person normal self 80'] = contact_df.loc['80+']['80+']
-contact_param['contacts per person normal self 70'] = contact_df.loc['70 - 79']['70 - 79']
-contact_param['contacts per person normal 70x80'] = contact_df.loc['70 - 79']['80+']
+contact_cat = ['80+', '70 - 79', '60 - 69', '50 - 59', '40 - 49', '30 - 39', '20 - 29', '10 - 19', '<10']
+for i, group in enumerate(varcontrol.age_groups):
+    contact_param['contacts per person normal self %s' % group] = contact_df.loc[contact_cat[i]][contact_cat[i]]
+
+for i, src in enumerate(varcontrol.age_groups):
+    for j, dst in enumerate(varcontrol.age_groups):
+        if int(src) < int(dst):
+            contact_param['contacts per person normal %sx%s' % (src,dst)] = contact_df.loc[contact_cat[i]][contact_cat[j]]
 
 model.set_components(params=contact_param)
+
+control_param = {}
+for group in varcontrol.age_groups:
+    control_param['infection start %s' % group] = control_df.loc['infection start %s' % group]['settings']
+
+model.set_components(params=control_param)
 
 base_df = model.run(return_columns=output_lst)
 base_df.to_csv(out_path / '00_base_results.csv')
 
 # current policies available are: self quarantine, social distancing
 pol_dict = {}
-#list is SWITCH, start, effectiveness
-pol_dict['self quarantine'] = policy_df.loc['self quarantine'].tolist()
-pol_dict['social distancing'] = policy_df.loc['social distancing'].tolist()
-pol_dict['self quarantine 80'] = policy_df.loc['self quarantine 80'].tolist()
-pol_dict['social distancing 80'] = policy_df.loc['social distancing 80'].tolist()
-pol_dict['self quarantine 70'] = policy_df.loc['self quarantine 70'].tolist()
-pol_dict['social distancing 70'] = policy_df.loc['social distancing 70'].tolist()
 
-
-
-pol_params = {'self quarantine policy SWITCH self': pol_dict['self quarantine'][0],
-              'self quarantine start': pol_dict['self quarantine'][1],
-              'self quarantine effectiveness': pol_dict['self quarantine'][2],
-              'social distancing policy SWITCH self': pol_dict['social distancing'][0],
-              'social distancing start': pol_dict['social distancing'][1],
-              'social distancing effectiveness': pol_dict['social distancing'][2],
-              'self quarantine policy SWITCH self 80': pol_dict['self quarantine 80'][0],
-              'self quarantine start 80': pol_dict['self quarantine 80'][1],
-              'self quarantine effectiveness 80': pol_dict['self quarantine 80'][2],
-              'social distancing policy SWITCH self 80': pol_dict['social distancing 80'][0],
-              'social distancing start 80': pol_dict['social distancing 80'][1],
-              'social distancing effectiveness 80': pol_dict['social distancing 80'][2],
-              'self quarantine policy SWITCH self 70': pol_dict['self quarantine 70'][0],
-              'self quarantine start 70': pol_dict['self quarantine 70'][1],
-              'self quarantine effectiveness 70': pol_dict['self quarantine 70'][2],
-              'social distancing policy SWITCH self 70': pol_dict['social distancing 70'][0],
-              'social distancing start 70': pol_dict['social distancing 70'][1],
-              'social distancing effectiveness 70': pol_dict['social distancing 70'][2],
-              }
+pol_params = {}
+for group in varcontrol.age_groups:
+    pol_params['self quarantine policy SWITCH self %s' % group] = policy_df.loc['self quarantine %s' % group]['SWITCH']
+    pol_params['self quarantine start %s' % group] = policy_df.loc['self quarantine %s' % group]['start']
+    pol_params['self quarantine end %s' % group] = policy_df.loc['self quarantine %s' % group]['end']
+    pol_params['self quarantine effectiveness %s' % group] = policy_df.loc['self quarantine %s' % group]['effectiveness']
+    pol_params['social distancing policy SWITCH self %s' % group] = policy_df.loc['social distancing %s' % group][
+        'SWITCH']
+    pol_params['social distancing start %s' % group] = policy_df.loc['social distancing %s' % group]['start']
+    pol_params['social distancing end %s' % group] = policy_df.loc['social distancing %s' % group]['end']
+    pol_params['social distancing effectiveness %s' % group] = policy_df.loc['social distancing %s' % group][
+        'effectiveness']
 
 pol_df = model.run(params=pol_params,return_columns=output_lst)
 out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
 out_df.to_csv(out_path / '00_full_results.csv')
 
-for stock in stock_lst:
-    df = out_df.loc(axis=1)[:,stock]
-    df.columns = df.columns.droplevel(level=1)
-    ax = df.plot(title=stock,legend=True)
-    ax.set_xlabel('day')
-    ax.set_ylabel('person')
-    plt.savefig(out_path.joinpath('01_%s.png' % stock.replace('"','')))
-    plt.close()
+create_graphs = True
 
-for flow in flow_lst:
-    df = out_df.loc(axis=1)[:, flow]
-    df.columns = df.columns.droplevel(level=1)
-    ax = df.plot(title=flow,legend=True)
-    ax.set_xlabel('day')
-    ax.set_ylabel('person/day')
-    plt.savefig(out_path.joinpath('02_%s.png' % flow.replace('"','')))
-    plt.close()
+if create_graphs:
+    for stock in stock_lst:
+        df = out_df.loc(axis=1)[:,stock]
+        df.columns = df.columns.droplevel(level=1)
+        ax = df.plot(title=stock,legend=True)
+        ax.set_xlabel('day')
+        ax.set_ylabel('person')
+        plt.savefig(out_path.joinpath('01_%s.png' % stock.replace('"','')))
+        plt.close()
+
+    for flow in flow_lst:
+        df = out_df.loc(axis=1)[:, flow]
+        df.columns = df.columns.droplevel(level=1)
+        ax = df.plot(title=flow,legend=True)
+        ax.set_xlabel('day')
+        ax.set_ylabel('person/day')
+        plt.savefig(out_path.joinpath('02_%s.png' % flow.replace('"','')))
+        plt.close()
+
+end = time.time()
+
+print('execution time:', end-start)
 
 
 
