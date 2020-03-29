@@ -98,18 +98,30 @@ ignore_param_lst = ['available test kits', 'available test kits for testing asym
                     'production phase1', 'production phase2', 'production phase3',
                     'production start phase1', 'production start phase2', 'production start phase3',
                     'production volume phase1', 'production volume phase2', 'production volume phase3',
-                    'testing duration', 'tests for symptomatic', 'used test kits', 'sum infection rate',
-                    'init available test kits']
+                    'testing duration', 'tests for symptomatic', 'used test kits',
+                    'init available test kits', 'normal first infected', 'first infection']
 
 #policy param variables are handled differently in the script and don't have to be copied
 policy_param_lst = ['self quarantine effectiveness', 'self quarantine policy',
-                    'self quarantine policy SWITCH self', 'self quarantine start',
+                    'self quarantine policy SWITCH self', 'self quarantine start', 'self quarantine end',
                     'social distancing effectiveness', 'social distancing policy',
-                    'social distancing policy SWITCH self', 'social distancing start']
+                    'social distancing policy SWITCH self', 'social distancing start', 'social distancing end']
 
 def agify_policy():
     out_lst = []
     for el in policy_param_lst:
+        # this needs to be added for the moment because we have both models mixed
+        out_lst.append(el)
+        for group in age_groups:
+            item = '%s %s' % (el,group)
+            out_lst.append(item)
+    return out_lst
+
+infection_control_lst = ['infection start']
+
+def agify_infectioncontrol():
+    out_lst = []
+    for el in infection_control_lst:
         # this needs to be added for the moment because we have both models mixed
         out_lst.append(el)
         for group in age_groups:
@@ -127,6 +139,23 @@ def run_varcontrol():
     var_lst = var_df.columns.tolist()
     print('Total number of variables:', len(var_lst))
 
+    sum_lst = []
+    sum_lst.extend(time_lst)
+    sum_lst.extend(init_lst)
+    sum_lst.extend(model_lst)
+    sum_lst.extend(stock_lst)
+    sum_lst.extend(flow_lst)
+    sum_lst.extend(endo_lst)
+    sum_lst.extend(ignore_param_lst)
+    sum_lst.extend(policy_param_lst)
+    sum_lst.extend(ignore_lst)
+    sum_lst.extend(infection_control_lst)
+
+    overflow = [v for v in sum_lst if v not in var_lst]
+
+    print('Variables that are not in the model:', overflow)
+    print('Number of variables that are not in the model', len(overflow))
+
     var_lst = [v for v in var_lst if v not in time_lst]
     var_lst = [v for v in var_lst if v not in init_lst]
     var_lst = [v for v in var_lst if v not in model_lst]
@@ -136,12 +165,15 @@ def run_varcontrol():
     var_lst = [v for v in var_lst if v not in ignore_param_lst]
     var_lst = [v for v in var_lst if v not in policy_param_lst]
     var_lst = [v for v in var_lst if v not in ignore_lst]
+    var_lst = [v for v in var_lst if v not in infection_control_lst]
 
     print('Variables that are not sorted yet:', var_lst)
     print('Number of not sorted variables:', len(var_lst))
 
+
+
 def run_varcontrol_age():
-    model = Model('corona_base_hackathon_agegroups_treated.py')
+    model = Model('corona_hackathon_agegroups_cons_treated.py')
     var_df = model.run()
     var_lst = var_df.columns.tolist()
     print('Total number of variables:', len(var_lst))
@@ -172,8 +204,8 @@ def run_varcontrol_age():
     print('Number of not sorted variables:', len(var_lst))
 
 if __name__ == '__main__':
-    #run_varcontrol()
-    run_varcontrol_age()
+    run_varcontrol()
+    #run_varcontrol_age()
 
 
 

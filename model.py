@@ -29,12 +29,15 @@ policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0)
 time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
 init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
 model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
+control_df = pd.read_csv(set_path / 'infectioncontrol.csv',index_col=0)
 
 time_lst = varcontrol.time_lst
 
 init_lst = varcontrol.init_lst
 
 model_lst = varcontrol.model_lst
+
+control_lst = varcontrol.infection_control_lst
 
 #stocks are sinks that accumulate over time
 stock_lst = varcontrol.stock_lst
@@ -67,6 +70,11 @@ for var in model_lst:
     model_params[var] = model_df.loc[var]['settings']
 model.set_components(params=model_params)
 
+control_params = {}
+for var in control_lst:
+    control_params[var] = control_df.loc[var]['settings']
+model.set_components(params=control_params)
+
 # current policies available are: self quarantine, social distancing
 pol_dict = {}
 #list is SWITCH, start, effectiveness
@@ -78,10 +86,12 @@ base_df.to_csv(out_path / '00_base_results.csv')
 
 pol_params = {'self quarantine policy SWITCH self': pol_dict['self quarantine'][0],
               'self quarantine start': pol_dict['self quarantine'][1],
-              'self quarantine effectiveness': pol_dict['self quarantine'][2],
+              'self quarantine end': pol_dict['self quarantine'][2],
+              'self quarantine effectiveness': pol_dict['self quarantine'][3],
               'social distancing policy SWITCH self': pol_dict['social distancing'][0],
               'social distancing start': pol_dict['social distancing'][1],
-              'social distancing effectiveness': pol_dict['social distancing'][2],
+              'social distancing end': pol_dict['social distancing'][2],
+              'social distancing effectiveness': pol_dict['social distancing'][3],
               }
 
 pol_df = model.run(params=pol_params,return_columns=output_lst)

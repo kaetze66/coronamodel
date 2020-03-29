@@ -1,5 +1,5 @@
 """
-Python model "corona_base_hackathon_v3_treated.py"
+Python model "corona_base_hackathon_treated.py"
 Translated using PySD version 0.10.0
 """
 from __future__ import division
@@ -15,8 +15,19 @@ _subscript_dict = {}
 _namespace = {
     'TIME': 'time',
     'Time': 'time',
-    'contacts per person symptomatic self': 'contacts_per_person_symptomatic_self',
+    'social distancing policy': 'social_distancing_policy',
+    'social distancing end': 'social_distancing_end',
+    'self quarantine policy': 'self_quarantine_policy',
+    'self quarantine end': 'self_quarantine_end',
+    'normal first infected': 'normal_first_infected',
     'infection rate': 'infection_rate',
+    'first infection': 'first_infection',
+    'infection start': 'infection_start',
+    'infection rate asymptomatic self': 'infection_rate_asymptomatic_self',
+    'contact infectivity asymptomatic self': 'contact_infectivity_asymptomatic_self',
+    'infection rate symptomatic self': 'infection_rate_symptomatic_self',
+    'contact infectivity symptomatic self': 'contact_infectivity_symptomatic_self',
+    'contacts per person symptomatic self': 'contacts_per_person_symptomatic_self',
     'total infection rate': 'total_infection_rate',
     'symptomatic contact fraction': 'symptomatic_contact_fraction',
     'accumulated cases': 'accumulated_cases',
@@ -35,9 +46,7 @@ _namespace = {
     'available test kits': 'available_test_kits',
     'available test kits for testing asymptomatic': 'available_test_kits_for_testing_asymptomatic',
     'available test kits for testing symptomatic': 'available_test_kits_for_testing_symptomatic',
-    'contact infectivity asymptomatic self': 'contact_infectivity_asymptomatic_self',
     'contact infectivity quarantine self': 'contact_infectivity_quarantine_self',
-    'contact infectivity symptomatic self': 'contact_infectivity_symptomatic_self',
     'contacts per person normal self': 'contacts_per_person_normal_self',
     'Critical Cases': 'critical_cases',
     'critical cases recovery rate': 'critical_cases_recovery_rate',
@@ -54,9 +63,7 @@ _namespace = {
     'Infected asymptomatic': 'infected_asymptomatic',
     'Infected symptomatic': 'infected_symptomatic',
     'infected critical case rate': 'infected_critical_case_rate',
-    'infection rate asymptomatic self': 'infection_rate_asymptomatic_self',
     'infection rate quarantined self': 'infection_rate_quarantined_self',
-    'infection rate symptomatic self': 'infection_rate_symptomatic_self',
     'infectivity per contact': 'infectivity_per_contact',
     'init available test kits': 'init_available_test_kits',
     'init Critical Cases': 'init_critical_cases',
@@ -89,11 +96,9 @@ _namespace = {
     'isolation effectiveness': 'isolation_effectiveness',
     'Recovered': 'recovered',
     'self quarantine effectiveness': 'self_quarantine_effectiveness',
-    'self quarantine policy': 'self_quarantine_policy',
     'self quarantine policy SWITCH self': 'self_quarantine_policy_switch_self',
     'self quarantine start': 'self_quarantine_start',
     'social distancing effectiveness': 'social_distancing_effectiveness',
-    'social distancing policy': 'social_distancing_policy',
     'social distancing policy SWITCH self': 'social_distancing_policy_switch_self',
     'social distancing start': 'social_distancing_start',
     'Susceptible': 'susceptible',
@@ -123,6 +128,182 @@ def time():
 
 
 @cache('step')
+def social_distancing_policy():
+    """
+    Real Name: b'social distancing policy'
+    Original Eqn: b'1-PULSE(social distancing start, social distancing end-social distancing start)*social distancing effectiveness'
+    Units: b'dmnl'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return 1 - functions.pulse(
+        __data['time'], social_distancing_start(),
+        social_distancing_end() - social_distancing_start()) * social_distancing_effectiveness()
+
+
+@cache('run')
+def social_distancing_end():
+    """
+    Real Name: b'social distancing end'
+    Original Eqn: b'50'
+    Units: b'Day'
+    Limits: (None, None)
+    Type: constant
+
+    b''
+    """
+    return 50
+
+
+@cache('step')
+def self_quarantine_policy():
+    """
+    Real Name: b'self quarantine policy'
+    Original Eqn: b'1-PULSE(self quarantine start, self quarantine end-self quarantine start)*self quarantine effectiveness'
+    Units: b'dmnl'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return 1 - functions.pulse(
+        __data['time'], self_quarantine_start(),
+        self_quarantine_end() - self_quarantine_start()) * self_quarantine_effectiveness()
+
+
+@cache('run')
+def self_quarantine_end():
+    """
+    Real Name: b'self quarantine end'
+    Original Eqn: b'50'
+    Units: b'Day'
+    Limits: (None, None)
+    Type: constant
+
+    b''
+    """
+    return 50
+
+
+@cache('run')
+def normal_first_infected():
+    """
+    Real Name: b'normal first infected'
+    Original Eqn: b'1'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: constant
+
+    b''
+    """
+    return 1
+
+
+@cache('step')
+def infection_rate():
+    """
+    Real Name: b'infection rate'
+    Original Eqn: b'total infection rate+first infection'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return total_infection_rate() + first_infection()
+
+
+@cache('step')
+def first_infection():
+    """
+    Real Name: b'first infection'
+    Original Eqn: b'PULSE(infection start, 1)*normal first infected'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return functions.pulse(__data['time'], infection_start(), 1) * normal_first_infected()
+
+
+@cache('run')
+def infection_start():
+    """
+    Real Name: b'infection start'
+    Original Eqn: b'-1'
+    Units: b'Day'
+    Limits: (None, None)
+    Type: constant
+
+    b''
+    """
+    return -1
+
+
+@cache('step')
+def infection_rate_asymptomatic_self():
+    """
+    Real Name: b'infection rate asymptomatic self'
+    Original Eqn: b'Infected asymptomatic*Susceptible*contact infectivity asymptomatic self*(social distancing policy SWITCH self\\\\ *social distancing policy+(1-social distancing policy SWITCH self))/non controlled population'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return infected_asymptomatic() * susceptible() * contact_infectivity_asymptomatic_self() * (
+        social_distancing_policy_switch_self() * social_distancing_policy() +
+        (1 - social_distancing_policy_switch_self())) / non_controlled_population()
+
+
+@cache('step')
+def contact_infectivity_asymptomatic_self():
+    """
+    Real Name: b'contact infectivity asymptomatic self'
+    Original Eqn: b'contacts per person normal self*infectivity per contact'
+    Units: b'1/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return contacts_per_person_normal_self() * infectivity_per_contact()
+
+
+@cache('step')
+def infection_rate_symptomatic_self():
+    """
+    Real Name: b'infection rate symptomatic self'
+    Original Eqn: b'Infected symptomatic*Susceptible*contact infectivity symptomatic self*(self quarantine policy SWITCH self\\\\ *self quarantine policy+(1-self quarantine policy SWITCH self))/non controlled population'
+    Units: b'person/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return infected_symptomatic() * susceptible() * contact_infectivity_symptomatic_self() * (
+        self_quarantine_policy_switch_self() * self_quarantine_policy() +
+        (1 - self_quarantine_policy_switch_self())) / non_controlled_population()
+
+
+@cache('step')
+def contact_infectivity_symptomatic_self():
+    """
+    Real Name: b'contact infectivity symptomatic self'
+    Original Eqn: b'contacts per person symptomatic self*infectivity per contact'
+    Units: b'1/Day'
+    Limits: (None, None)
+    Type: component
+
+    b''
+    """
+    return contacts_per_person_symptomatic_self() * infectivity_per_contact()
+
+
+@cache('step')
 def contacts_per_person_symptomatic_self():
     """
     Real Name: b'contacts per person symptomatic self'
@@ -134,20 +315,6 @@ def contacts_per_person_symptomatic_self():
     b''
     """
     return contacts_per_person_normal_self() * symptomatic_contact_fraction()
-
-
-@cache('step')
-def infection_rate():
-    """
-    Real Name: b'infection rate'
-    Original Eqn: b'total infection rate'
-    Units: b'person/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return total_infection_rate()
 
 
 @cache('step')
@@ -408,23 +575,6 @@ def available_test_kits_for_testing_symptomatic():
 
 
 @cache('step')
-def contact_infectivity_asymptomatic_self():
-    """
-    Real Name: b'contact infectivity asymptomatic self'
-    Original Eqn: b'contacts per person normal self*infectivity per contact*social distancing policy*social distancing policy SWITCH self\\\\ +(1-social distancing policy SWITCH self)*contacts per person normal self*infectivity per contact'
-    Units: b'1/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return contacts_per_person_normal_self() * infectivity_per_contact(
-    ) * social_distancing_policy() * social_distancing_policy_switch_self() + (
-        1 - social_distancing_policy_switch_self()
-    ) * contacts_per_person_normal_self() * infectivity_per_contact()
-
-
-@cache('step')
 def contact_infectivity_quarantine_self():
     """
     Real Name: b'contact infectivity quarantine self'
@@ -436,23 +586,6 @@ def contact_infectivity_quarantine_self():
     b''
     """
     return contact_infectivity_asymptomatic_self() * (1 - isolation_effectiveness())
-
-
-@cache('step')
-def contact_infectivity_symptomatic_self():
-    """
-    Real Name: b'contact infectivity symptomatic self'
-    Original Eqn: b'contacts per person symptomatic self*infectivity per contact*self quarantine policy*\\\\ self quarantine policy SWITCH self+(1-self quarantine policy SWITCH self)*contacts per person symptomatic self\\\\ *infectivity per contact'
-    Units: b'1/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return contacts_per_person_symptomatic_self() * infectivity_per_contact(
-    ) * self_quarantine_policy() * self_quarantine_policy_switch_self() + (
-        1 - self_quarantine_policy_switch_self()
-    ) * contacts_per_person_symptomatic_self() * infectivity_per_contact()
 
 
 @cache('run')
@@ -667,21 +800,6 @@ def infected_critical_case_rate():
 
 
 @cache('step')
-def infection_rate_asymptomatic_self():
-    """
-    Real Name: b'infection rate asymptomatic self'
-    Original Eqn: b'Infected asymptomatic*Susceptible*contact infectivity asymptomatic self/non controlled population'
-    Units: b'person/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return infected_asymptomatic() * susceptible() * contact_infectivity_asymptomatic_self(
-    ) / non_controlled_population()
-
-
-@cache('step')
 def infection_rate_quarantined_self():
     """
     Real Name: b'infection rate quarantined self'
@@ -693,21 +811,6 @@ def infection_rate_quarantined_self():
     b''
     """
     return isolated() * susceptible() * contact_infectivity_quarantine_self(
-    ) / non_controlled_population()
-
-
-@cache('step')
-def infection_rate_symptomatic_self():
-    """
-    Real Name: b'infection rate symptomatic self'
-    Original Eqn: b'Infected symptomatic*Susceptible*contact infectivity symptomatic self/non controlled population'
-    Units: b'person/Day'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return infected_symptomatic() * susceptible() * contact_infectivity_symptomatic_self(
     ) / non_controlled_population()
 
 
@@ -771,14 +874,14 @@ def init_diseased():
 def init_infected_asymptomatic():
     """
     Real Name: b'init Infected asymptomatic'
-    Original Eqn: b'1'
+    Original Eqn: b'0'
     Units: b'person'
     Limits: (None, None)
     Type: constant
 
     b''
     """
-    return 1
+    return 0
 
 
 @cache('run')
@@ -1165,22 +1268,6 @@ def self_quarantine_effectiveness():
     return 0.75
 
 
-@cache('step')
-def self_quarantine_policy():
-    """
-    Real Name: b'self quarantine policy'
-    Original Eqn: b'1-PULSE(self quarantine start, FINAL TIME-self quarantine start+1)*self quarantine effectiveness'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return 1 - functions.pulse(
-        __data['time'], self_quarantine_start(),
-        final_time() - self_quarantine_start() + 1) * self_quarantine_effectiveness()
-
-
 @cache('run')
 def self_quarantine_policy_switch_self():
     """
@@ -1221,22 +1308,6 @@ def social_distancing_effectiveness():
     b''
     """
     return 0.6
-
-
-@cache('step')
-def social_distancing_policy():
-    """
-    Real Name: b'social distancing policy'
-    Original Eqn: b'1-PULSE(social distancing start, FINAL TIME-social distancing start+1)*social distancing effectiveness'
-    Units: b'dmnl'
-    Limits: (None, None)
-    Type: component
-
-    b''
-    """
-    return 1 - functions.pulse(
-        __data['time'], social_distancing_start(),
-        final_time() - social_distancing_start() + 1) * social_distancing_effectiveness()
 
 
 @cache('run')
