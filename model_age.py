@@ -131,7 +131,11 @@ pol_df = model.run(params=pol_params,return_columns=output_lst)
 out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
 out_df.to_csv(out_path / '00_full_results.csv')
 
-create_graphs = True
+create_graphs = False
+
+cfr_lst = []
+for group in varcontrol.age_groups:
+    cfr_lst.append('case fatality rate %s' % group)
 
 if create_graphs:
     for stock in stock_lst:
@@ -151,6 +155,17 @@ if create_graphs:
         ax.set_ylabel('person/day')
         plt.savefig(out_path.joinpath('02_%s.png' % flow.replace('"','')))
         plt.close()
+
+for cfr in cfr_lst:
+    df = out_df.loc(axis=1)[:, cfr]
+    df.columns = df.columns.droplevel(level=1)
+    ax = df.plot(title=cfr, legend=True)
+    ax.set_xlabel('day')
+    ax.set_ylabel('%')
+    plt.savefig(out_path.joinpath('01_%s.png' % cfr.replace('"', '')))
+    plt.close()
+
+
 
 end = time.time()
 
