@@ -1113,7 +1113,7 @@ def infection_rate():
 def total_infection_rate():
     """
     Real Name: b'total infection rate'
-    Original Eqn: b'total infection rate 80 +total infection rate 70 +total infection rate 60 +total infection rate 50 +total infection rate 40 +total infection rate 30 +total infection rate 20 +total infection rate 10 +total infection rate 00'
+    Original Eqn: b'total infection rate 80 +total infection rate 70 +total infection rate 60 +total infection rate 50 +total infection rate 40 +total infection rate 30 +total infection rate 20 +total infection rate 10 +total infection rate 00 +first infection 80 +first infection 70 +first infection 60 +first infection 50 +first infection 40 +first infection 30 +first infection 20 +first infection 10 +first infection 00'
     Units: b'person/Day'
     Limits: (None, None)
     Type: component
@@ -1122,7 +1122,10 @@ def total_infection_rate():
     """
     return total_infection_rate_80() + total_infection_rate_70() + total_infection_rate_60(
     ) + total_infection_rate_50() + total_infection_rate_40() + total_infection_rate_30(
-    ) + total_infection_rate_20() + total_infection_rate_10() + total_infection_rate_00()
+    ) + total_infection_rate_20() + total_infection_rate_10() + total_infection_rate_00(
+    ) + first_infection_80() + first_infection_70() + first_infection_60() + first_infection_50(
+    ) + first_infection_40() + first_infection_30() + first_infection_20() + first_infection_10(
+    ) + first_infection_00()
 
 
 @cache('step')
