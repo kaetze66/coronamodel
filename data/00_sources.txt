@@ -1,0 +1,16 @@
+Sources for contact matrices
+
+Belgium, Finland, Germany, Italy, Luxembourg, Netherlands, Poland, UK
+
+are sourced from https://cran.r-project.org/web/packages/socialmixr/vignettes/introduction.html
+
+Netherlands, UK only has age groups up to 70+, so 70+ category has been split evenly between 70 - 79 and 80+
+
+Sources for parameters
+
+case fatality rate --> https://ourworldindata.org/coronavirus
+
+population data is sourced in the file
+
+
+
