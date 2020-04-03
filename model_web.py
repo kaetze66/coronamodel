@@ -78,13 +78,6 @@ def run_model_web(switch0=0,start0=0,end0=0,effectiveness0=0,switch1=0,start1=0,
 
     model_lst = varcontrol.agify_model()
 
-    #stocks are sinks that accumulate over time
-    stock_lst = varcontrol.agify_stock()
-    #flows are the rates at which persons flow between the stocks
-    flow_lst = varcontrol.agify_flow()
-
-    endo_lst = varcontrol.agify_endo()
-
     output_lst = ['Susceptible', 'total infected', 'Critical Cases', 'Diseased']
     #updating the time settings
 

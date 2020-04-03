@@ -4,7 +4,7 @@ contacts per person normal self,30,contacts,30,30,30,30,30,30,30,30,30
 duration of treatment,10,days,10,10,10,10,10,10,10,10,10
 fraction of asymptomatic case development,0.5,percentage,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5
 fraction of critical cases,0.1,percentage,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1
-fraction of death,0.4,percentage,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4
+fraction of death,0.4,percentage,0.8,0.4,0.4,0.4,0.3,0.2,0.1,0.1,0
 immunity time,360,days,360,360,360,360,360,360,360,360,360
 infectivity per contact,0.0125,percentage,0.0125,0.0125,0.0125,0.0125,0.0125,0.0125,0.0125,0.0125,0.0125
 isolation duration,14,days,14,14,14,14,14,14,14,14,14

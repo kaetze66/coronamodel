@@ -11,6 +11,9 @@ from pysd.py_backend.functions import Model
 import matplotlib.pyplot as plt
 import pandas as pd
 import varcontrol
+import time
+
+start = time.time()
 
 model = Model('corona_base_hackathon_treated.py')
 path = Path.cwd()
@@ -115,6 +118,10 @@ for flow in flow_lst:
     ax.set_ylabel('person/day')
     plt.savefig(out_path.joinpath('02_%s.png' % flow.replace('"','')))
     plt.close()
+
+end = time.time()
+
+print('execution time:', end-start)
 
 
 

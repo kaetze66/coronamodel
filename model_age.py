@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import varcontrol
 import time
+import numpy as np
 
 start = time.time()
 
@@ -19,6 +20,7 @@ model = Model('corona_hackathon_agegroups_cons_treated.py')
 path = Path.cwd()
 out_path = path / 'output'
 set_path = path / 'settings'
+data_path = path / 'data'
 try:
     file_lst = list(out_path.glob('*'))
     for file in file_lst:
@@ -70,8 +72,8 @@ for cond in init_lst:
         if col == '00':
             col = '0'
         init_params[cond] = init_df.loc[name][col]
-    else:
-        init_params[cond] = init_df.loc[cond][0]
+    #else:
+    #    init_params[cond] = init_df.loc[cond][0]
 model.set_components(params=init_params)
 
 #updating the model parameters
@@ -92,13 +94,15 @@ model.set_components(params=model_params)
 contact_param = {}
 
 contact_cat = ['80+', '70 - 79', '60 - 69', '50 - 59', '40 - 49', '30 - 39', '20 - 29', '10 - 19', '<10']
-for i, group in enumerate(varcontrol.age_groups):
-    contact_param['contacts per person normal self %s' % group] = contact_df.loc[contact_cat[i]][contact_cat[i]]
+contact_cat = list(zip(varcontrol.age_groups,contact_cat))
 
-for i, src in enumerate(varcontrol.age_groups):
-    for j, dst in enumerate(varcontrol.age_groups):
-        if int(src) < int(dst):
-            contact_param['contacts per person normal %sx%s' % (src,dst)] = contact_df.loc[contact_cat[i]][contact_cat[j]]
+for group in contact_cat:
+    contact_param['contacts per person normal self %s' % group[0]] = contact_df.loc[group[1]][group[1]]
+
+for src in contact_cat:
+    for dst in contact_cat:
+        if int(src[0]) < int(dst[0]):
+            contact_param['contacts per person normal %sx%s' % (src[0],dst[0])] = contact_df.loc[src[1]][dst[1]]
 
 model.set_components(params=contact_param)
 
@@ -131,7 +135,7 @@ pol_df = model.run(params=pol_params,return_columns=output_lst)
 out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
 out_df.to_csv(out_path / '00_full_results.csv')
 
-create_graphs = False
+create_graphs = True
 
 cfr_lst = []
 for group in varcontrol.age_groups:
@@ -156,9 +160,24 @@ if create_graphs:
         plt.savefig(out_path.joinpath('02_%s.png' % flow.replace('"','')))
         plt.close()
 
+cfr_df = pd.read_csv(data_path / 'cfr_age.csv',index_col=0)
+cfr_dict = {}
+
+index = np.arange(0,time_params['FINAL TIME']+1,1)
+for group in contact_cat:
+    dct = {'index':index}
+    df = pd.DataFrame(dct)
+    df = df.set_index('index',drop=True)
+    df['South Korea'] = cfr_df.loc[group[1]]['South Korea']
+    df['Spain'] = cfr_df.loc[group[1]]['Spain']
+    df['China'] = cfr_df.loc[group[1]]['China']
+    df['Italy'] = cfr_df.loc[group[1]]['Italy']
+    cfr_dict['case fatality rate %s' % group[0]] = df
+
 for cfr in cfr_lst:
     df = out_df.loc(axis=1)[:, cfr]
     df.columns = df.columns.droplevel(level=1)
+    df = pd.concat([df,cfr_dict[cfr]],axis=1)
     ax = df.plot(title=cfr, legend=True)
     ax.set_xlabel('day')
     ax.set_ylabel('%')
