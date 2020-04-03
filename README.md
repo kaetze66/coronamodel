@@ -7,7 +7,7 @@ settings folder for all the settings for running the model
 
 data folder for all the data for calibration
 
-#policy settings:
+# policy settings:
 currently two policies are available (social distancing and self quarantine) that impact the number of contacts per day per person
 social distancing impacts the normal contacts (for everyone), self quarantine impacts the symptomatic
 
