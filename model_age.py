@@ -72,8 +72,15 @@ for cond in init_lst:
         if col == '00':
             col = '0'
         init_params[cond] = init_df.loc[name][col]
-    #else:
-    #    init_params[cond] = init_df.loc[cond][0]
+
+# this part adds the sum for each init value in the summary graphs so they are calculated correctly
+for cond in varcontrol.init_lst:
+    sum = 0
+    for key, value in init_params.items():
+        if key.startswith(cond):
+            sum += value
+    init_params[cond] = sum
+
 model.set_components(params=init_params)
 
 #updating the model parameters
@@ -135,7 +142,7 @@ pol_df = model.run(params=pol_params,return_columns=output_lst)
 out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
 out_df.to_csv(out_path / '00_full_results.csv')
 
-create_graphs = True
+create_graphs = False
 
 cfr_lst = []
 for group in varcontrol.age_groups:
