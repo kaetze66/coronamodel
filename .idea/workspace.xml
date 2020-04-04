@@ -2,35 +2,81 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="798fe648-118b-4bb7-8c3c-5f0ae4c2de23" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sd_0_10" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sd_0_50" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sd_0_60" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sd_10_40" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sd_60_120" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sdq_0_60" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sdq_60_120" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_0_60" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_120" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/full_output/results_base.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/settings/policy_unchanged.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/coronamodel.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/coronamodel.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_40_130" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_110" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_120" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_130" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_140" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_50_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_110" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_130" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_140" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_150" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sq_60_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_10" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_20" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_30" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_40" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_50" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_0_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_20" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_30" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_40" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_50" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_10_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_110" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_30" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_40" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_50" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_20_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_110" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_120" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_40" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_50" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_30_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_110" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_120" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_130" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_50" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_40_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_100" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_110" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_120" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_60" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_70" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_80" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/full_output/policy_sqd_50_90" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/results_base.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/full_output/policy_sq_60_120" beforeDir="false" afterPath="$PROJECT_DIR$/full_output/policy_sq_60_120" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/full_output/results_base.csv" beforeDir="false" afterPath="$PROJECT_DIR$/full_output/results_base.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model_age.py" beforeDir="false" afterPath="$PROJECT_DIR$/model_age.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/00_base_results.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/00_full_results.csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 00.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 10.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 20.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 30.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 40.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 50.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 60.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 70.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/01_case fatality rate 80.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings/policy.csv" beforeDir="false" afterPath="$PROJECT_DIR$/settings/policy.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/settings/timesettings.csv" beforeDir="false" afterPath="$PROJECT_DIR$/settings/timesettings.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -189,7 +235,8 @@
       <workItem from="1585741078506" duration="3708000" />
       <workItem from="1585926458192" duration="4300000" />
       <workItem from="1585947427639" duration="19000" />
-      <workItem from="1585987017623" duration="22130000" />
+      <workItem from="1585987017623" duration="22294000" />
+      <workItem from="1586014960314" duration="1730000" />
     </task>
     <servers />
   </component>
@@ -220,22 +267,22 @@
       <screen x="0" y="0" width="1280" height="800" />
     </state>
     <state x="104" y="62" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.800@0.0.1280.800" timestamp="1585987036969" />
-    <state width="1238" height="229" key="GridCell.Tab.0.bottom" timestamp="1586013988442">
+    <state width="1238" height="229" key="GridCell.Tab.0.bottom" timestamp="1586014880459">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="229" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1586013988442" />
-    <state width="1238" height="229" key="GridCell.Tab.0.center" timestamp="1586013988440">
+    <state width="1238" height="229" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1586014880459" />
+    <state width="1238" height="229" key="GridCell.Tab.0.center" timestamp="1586014880458">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="229" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1586013988440" />
-    <state width="1238" height="229" key="GridCell.Tab.0.left" timestamp="1586013988439">
+    <state width="1238" height="229" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1586014880458" />
+    <state width="1238" height="229" key="GridCell.Tab.0.left" timestamp="1586014880458">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="229" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1586013988439" />
-    <state width="1238" height="229" key="GridCell.Tab.0.right" timestamp="1586013988441">
+    <state width="1238" height="229" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1586014880458" />
+    <state width="1238" height="229" key="GridCell.Tab.0.right" timestamp="1586014880459">
       <screen x="0" y="0" width="1280" height="800" />
     </state>
-    <state width="1238" height="229" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1586013988441" />
+    <state width="1238" height="229" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1586014880459" />
     <state x="141" y="39" key="SettingsEditor" timestamp="1585998986804">
       <screen x="0" y="0" width="1280" height="800" />
     </state>

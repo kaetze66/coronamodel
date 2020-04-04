@@ -122,7 +122,7 @@ for measure_ in ['sd', 'sq', 'sqd']:
             pol_dict['social distancing'] = policy_df.loc['social distancing'].tolist()
 
             base_df = model.run(return_columns=output_lst)
-            base_df.to_csv(full_out_path / 'results_base.csv')
+            base_df.to_csv(out_path / 'results_base.csv')
 
             pol_params = {'self quarantine policy SWITCH self': pol_dict['self quarantine'][0],
                           'self quarantine start': pol_dict['self quarantine'][1],
