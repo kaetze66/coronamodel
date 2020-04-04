@@ -14,5 +14,7 @@ case fatality rate --> https://ourworldindata.org/coronavirus
 
 population data is sourced in the file
 
+Critical cases and diseased for Switzerland are from https://github.com/daenuprobst/covid19-cases-switzerland/blob/master/covid_19_data_switzerland.xlsx
+
 
 

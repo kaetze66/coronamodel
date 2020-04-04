@@ -22,14 +22,14 @@ data_path = path / 'data'
 #reading the settings
 policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0)
 time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
-init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
+#init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
 model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
 contact_df = pd.read_csv(set_path / 'contacts.csv',index_col=0,header=0)
 control_df = pd.read_csv(set_path / 'infectioncontrol.csv',index_col=0)
+pop_data = pd.read_csv(data_path / 'pop_data.csv',index_col=0)
 
 # creating the various lists for use later
 time_lst = varcontrol.time_lst
-init_lst = varcontrol.agify_init()
 model_lst = varcontrol.agify_model()
 #stocks are sinks that accumulate over time
 stock_lst = varcontrol.agify_stock()
@@ -48,6 +48,7 @@ output_lst.extend(endo_lst)
 def setup_model():
     #handling the paths and the model
     contact_cat = ['80+', '70 - 79', '60 - 69', '50 - 59', '40 - 49', '30 - 39', '20 - 29', '10 - 19', '<10']
+    contact_cat = list(zip(varcontrol.age_groups, contact_cat))
     model = Model('corona_hackathon_agegroups_cons_treated.py')
 
     try:
@@ -64,22 +65,14 @@ def setup_model():
         time_params[cond] = time_df.loc[cond][0]
     model.set_components(params=time_params)
 
-    #updating the initial conditions
+    # we don't need to read in all initial conditions because they will never change
+    # only initial population data is relevant and can be drawn from the data folder
+    sum = 0
     init_params = {}
-    for cond in init_lst:
-        if cond[-2:] in varcontrol.age_groups:
-            name, col = cond.rsplit(' ',1)
-            if col == '00':
-                col = '0'
-            init_params[cond] = init_df.loc[name][col]
-
-    # this part adds the sum for each init value in the summary graphs so they are calculated correctly
-    for cond in varcontrol.init_lst:
-        sum = 0
-        for key, value in init_params.items():
-            if key.startswith(cond):
-                sum += value
-        init_params[cond] = sum
+    for group in contact_cat:
+        init_params['init Susceptible %s' % group[0]] = pop_data.loc['Switzerland'][group[1]]
+        sum += pop_data.loc['Switzerland'][group[1]]
+    init_params['init Susceptible'] = sum
 
     model.set_components(params=init_params)
 
@@ -101,7 +94,7 @@ def setup_model():
     contact_param = {}
 
 
-    contact_cat = list(zip(varcontrol.age_groups,contact_cat))
+
 
     for group in contact_cat:
         contact_param['contacts per person normal self %s' % group[0]] = contact_df.loc[group[1]][group[1]]

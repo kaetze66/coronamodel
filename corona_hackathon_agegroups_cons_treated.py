@@ -13050,7 +13050,7 @@ def init_infected_asymptomatic_60():
 
     b''
     """
-    return 1
+    return 0
 
 
 @cache('step')
@@ -13875,7 +13875,7 @@ def init_infected_asymptomatic_50():
 
     b''
     """
-    return 1
+    return 0
 
 
 @cache('run')
@@ -14842,7 +14842,7 @@ def init_infected_asymptomatic_80():
 
     b''
     """
-    return 1
+    return 0
 
 
 @cache('step')
@@ -15417,7 +15417,7 @@ def init_infected_asymptomatic_70():
 
     b''
     """
-    return 1
+    return 0
 
 
 @cache('run')
