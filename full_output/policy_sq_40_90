@@ -1,0 +1,21 @@
+,SWITCH,start,end,effectiveness
+self quarantine,1,40,90,0.75
+social distancing,0,60,150,0.6
+self quarantine 80,1,21,50,0.75
+social distancing 80,1,31,50,0.6
+self quarantine 70,1,21,50,0.75
+social distancing 70,1,31,50,0.6
+self quarantine 60,1,21,50,0.75
+social distancing 60,1,31,50,0.6
+self quarantine 50,1,21,50,0.75
+social distancing 50,1,31,50,0.6
+self quarantine 40,1,21,50,0.75
+social distancing 40,1,31,50,0.6
+self quarantine 30,1,21,50,0.75
+social distancing 30,1,31,50,0.6
+self quarantine 20,1,21,50,0.75
+social distancing 20,1,31,50,0.6
+self quarantine 10,1,21,50,0.75
+social distancing 10,1,31,50,0.6
+self quarantine 00,1,21,50,0.75
+social distancing 00,1,31,50,0.6

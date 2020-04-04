@@ -142,6 +142,7 @@ pol_df = model.run(params=pol_params,return_columns=output_lst)
 out_df = pd.concat([base_df,pol_df],axis=1,keys=['base','policy'])
 out_df.to_csv(out_path / '00_full_results.csv')
 
+# Toggle creating graphs
 create_graphs = False
 
 cfr_lst = []
@@ -170,26 +171,30 @@ if create_graphs:
 cfr_df = pd.read_csv(data_path / 'cfr_age.csv',index_col=0)
 cfr_dict = {}
 
-index = np.arange(0,time_params['FINAL TIME']+1,1)
-for group in contact_cat:
-    dct = {'index':index}
-    df = pd.DataFrame(dct)
-    df = df.set_index('index',drop=True)
-    df['South Korea'] = cfr_df.loc[group[1]]['South Korea']
-    df['Spain'] = cfr_df.loc[group[1]]['Spain']
-    df['China'] = cfr_df.loc[group[1]]['China']
-    df['Italy'] = cfr_df.loc[group[1]]['Italy']
-    cfr_dict['case fatality rate %s' % group[0]] = df
+plotting = False
+# toggle plotting
+if plotting:
 
-for cfr in cfr_lst:
-    df = out_df.loc(axis=1)[:, cfr]
-    df.columns = df.columns.droplevel(level=1)
-    df = pd.concat([df,cfr_dict[cfr]],axis=1)
-    ax = df.plot(title=cfr, legend=True)
-    ax.set_xlabel('day')
-    ax.set_ylabel('%')
-    plt.savefig(out_path.joinpath('01_%s.png' % cfr.replace('"', '')))
-    plt.close()
+    index = np.arange(0,time_params['FINAL TIME']+1,1)
+    for group in contact_cat:
+        dct = {'index':index}
+        df = pd.DataFrame(dct)
+        df = df.set_index('index',drop=True)
+        df['South Korea'] = cfr_df.loc[group[1]]['South Korea']
+        df['Spain'] = cfr_df.loc[group[1]]['Spain']
+        df['China'] = cfr_df.loc[group[1]]['China']
+        df['Italy'] = cfr_df.loc[group[1]]['Italy']
+        cfr_dict['case fatality rate %s' % group[0]] = df
+
+    for cfr in cfr_lst:
+        df = out_df.loc(axis=1)[:, cfr]
+        df.columns = df.columns.droplevel(level=1)
+        df = pd.concat([df,cfr_dict[cfr]],axis=1)
+        ax = df.plot(title=cfr, legend=True)
+        ax.set_xlabel('day')
+        ax.set_ylabel('%')
+        plt.savefig(out_path.joinpath('01_%s.png' % cfr.replace('"', '')))
+        plt.close()
 
 
 

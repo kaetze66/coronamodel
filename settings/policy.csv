@@ -1,6 +1,6 @@
 ,SWITCH,start,end,effectiveness
 self quarantine,1,21,50,0.75
-social distancing,0,31,50,0.6
+social distancing,1,31,50,0.6
 self quarantine 80,1,21,50,0.75
 social distancing 80,1,31,50,0.6
 self quarantine 70,1,21,50,0.75
