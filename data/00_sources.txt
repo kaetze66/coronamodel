@@ -6,6 +6,8 @@ are sourced from https://cran.r-project.org/web/packages/socialmixr/vignettes/in
 
 Netherlands, UK only has age groups up to 70+, so 70+ category has been split evenly between 70 - 79 and 80+
 
+Switzerland contact matrix has been created by summing 2/3 cm_germany + 1/3 cm_italy
+
 Sources for parameters
 
 case fatality rate --> https://ourworldindata.org/coronavirus
