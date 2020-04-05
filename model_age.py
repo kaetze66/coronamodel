@@ -24,7 +24,8 @@ policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0)
 time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
 #init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
 model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
-contact_df = pd.read_csv(set_path / 'contacts.csv',index_col=0,header=0)
+#contact_df = pd.read_csv(set_path / 'contacts.csv',index_col=0,header=0)
+contact_df = pd.read_csv(data_path / 'cm_switzerland_sym.csv',index_col=0)
 control_df = pd.read_csv(set_path / 'infectioncontrol.csv',index_col=0)
 pop_data = pd.read_csv(data_path / 'pop_data.csv',index_col=0)
 
@@ -50,14 +51,6 @@ def setup_model():
     contact_cat = ['80+', '70 - 79', '60 - 69', '50 - 59', '40 - 49', '30 - 39', '20 - 29', '10 - 19', '<10']
     contact_cat = list(zip(varcontrol.age_groups, contact_cat))
     model = Model('corona_hackathon_agegroups_cons_treated.py')
-
-    try:
-        file_lst = list(out_path.glob('*'))
-        for file in file_lst:
-            file.unlink()
-    except FileNotFoundError:
-        pass
-    out_path.mkdir(exist_ok=True)
 
     #updating the time settings
     time_params = {}
@@ -99,6 +92,7 @@ def setup_model():
     for group in contact_cat:
         contact_param['contacts per person normal self %s' % group[0]] = contact_df.loc[group[1]][group[1]]
 
+    # error is here, need to fix
     for src in contact_cat:
         for dst in contact_cat:
             if int(src[0]) < int(dst[0]):
@@ -108,10 +102,19 @@ def setup_model():
 
     control_param = {}
     for group in varcontrol.age_groups:
-        control_param['infection start %s' % group] = control_df.loc['infection start %s' % group]['settings']
+        control_param['infection start %s' % group] = control_df.loc['infection start %s' % group]['Switzerland']
 
     model.set_components(params=control_param)
     return model,time_params,contact_cat
+
+def clean_output(out_path):
+    try:
+        file_lst = list(out_path.glob('*'))
+        for file in file_lst:
+            file.unlink()
+    except FileNotFoundError:
+        pass
+    out_path.mkdir(exist_ok=True)
 
 def run_base(model):
     base_df = model.run(return_columns=output_lst)
@@ -120,8 +123,6 @@ def run_base(model):
 
 def run_policy(model):
     # current policies available are: self quarantine, social distancing
-    pol_dict = {}
-
     pol_params = {}
     for group in varcontrol.age_groups:
         pol_params['self quarantine policy SWITCH self %s' % group] = policy_df.loc['self quarantine %s' % group]['SWITCH']
@@ -194,6 +195,7 @@ def create_output(out_df,time_params,contact_cat,create_graphs):
 
 if __name__ == '__main__':
     start = time.time()
+    clean_output(out_path)
     model,time_params,contact_cat = setup_model()
     base = run_base(model)
     policy = run_policy(model)
