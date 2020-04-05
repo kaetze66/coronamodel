@@ -8,11 +8,14 @@ import model_age
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-import pysd
+import varcontrol
 
 class Calibrate:
     def __init__(self):
-        self.model = model_age.setup_model()[0]
+        input = model_age.setup_model()
+        self.model = input[0]
+        self.time_params = input[1]
+        self.contact_cat = input[2]
         self.data_dict = {}
         self.out_vars = ['Critical Cases', 'Diseased']
         self.return_ts = []
@@ -34,8 +37,11 @@ class Calibrate:
         # cal vals are the variables that we calibrate
         self.cal_vars = ['infectivity per contact']
         # bounds are the min and max values for the cal vals
-        cal_bounds = [(0.01,0.015)]
+        cal_bounds = [(0.001,0.025)]
         guess_list = np.array([0.0125])
+
+        #calculate the base data error for normalizing the error
+
 
         res = opt.minimize(error_function,guess_list,bounds=cal_bounds)
 
@@ -57,13 +63,49 @@ class Calibrate:
 
     def calib_output(self,res):
         self.model.set_components(params=dict(zip(self.cal_vars,res)))
-        out_df = self.model.run(return_columns=self.out_vars)
+        output_vars = []
+        cfr_lst = []
+        for group in varcontrol.age_groups:
+            cfr_lst.append('case fatality rate %s' % group)
+        output_vars.extend(cfr_lst)
+        output_vars.extend(self.out_vars)
+        out_df = self.model.run(return_columns=output_vars)
         for var in self.out_vars:
             df = pd.concat([out_df[var],self.data_dict[var]],axis=1)
+            df = df.loc[self.return_ts]
             ax = df.plot(title=var, legend=True)
             ax.set_xlabel('day')
             ax.set_ylabel('person')
             plt.savefig(self.calib_path.joinpath('calib_%s.png' % var))
+            plt.close()
+
+        cfr_df = pd.read_csv(self.data_path / 'cfr_age.csv', index_col=0)
+        cfr_dict = {}
+
+        index = np.arange(0, self.time_params['FINAL TIME'] + 1, 1)
+        for group in self.contact_cat:
+            dct = {'index': index}
+            df = pd.DataFrame(dct)
+            df = df.set_index('index', drop=True)
+            df['South Korea'] = cfr_df.loc[group[1]]['South Korea']
+            df['Spain'] = cfr_df.loc[group[1]]['Spain']
+            df['China'] = cfr_df.loc[group[1]]['China']
+            df['Italy'] = cfr_df.loc[group[1]]['Italy']
+            cfr_dict['case fatality rate %s' % group[0]] = df
+
+        cfr_lst = []
+        for group in varcontrol.age_groups:
+            cfr_lst.append('case fatality rate %s' % group)
+
+        for cfr in cfr_lst:
+            print(cfr)
+            df = out_df.loc(axis=1)[cfr]
+            df = pd.concat([df, cfr_dict[cfr]], axis=1)
+            df = df.loc[self.return_ts]
+            ax = df.plot(title=cfr, legend=True)
+            ax.set_xlabel('day')
+            ax.set_ylabel('%')
+            plt.savefig(self.calib_path.joinpath('01_%s.png' % cfr.replace('"', '')))
             plt.close()
 
 
