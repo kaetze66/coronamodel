@@ -20,7 +20,6 @@ set_path = path / 'settings'
 data_path = path / 'data'
 
 #reading the settings
-policy_df = pd.read_csv(set_path / 'policy.csv',index_col=0,header=[0,1])
 time_df = pd.read_csv(set_path / 'timesettings.csv',index_col=0)
 #init_df = pd.read_csv(set_path / 'initialconditions.csv',index_col=0)
 model_df = pd.read_csv(set_path / 'modelsettings.csv',index_col=0)
@@ -105,6 +104,15 @@ def setup_model():
         control_param['infection start %s' % group] = control_df.loc['infection start %s' % group]['Switzerland']
 
     model.set_components(params=control_param)
+
+    #making sure all policy switches are set to 0
+    pol_switches = {}
+    for group in varcontrol.age_groups:
+        pol_switches['self quarantine policy SWITCH self %s' % group] = 0
+        pol_switches['social distancing policy SWITCH self %s' % group] = 0
+
+    model.set_components(params=pol_switches)
+
     return model,time_params,contact_cat
 
 def clean_output(out_path):
@@ -121,7 +129,8 @@ def run_base(model):
     base_df.to_csv(out_path / '00_base_results.csv')
     return base_df
 
-def run_policy(model,policy_df):
+def set_policy():
+    policy_df = pd.read_csv(set_path / 'policy.csv', index_col=0, header=[0, 1])
     # current policies available are: self quarantine, social distancing
     policy_df = policy_df.loc(axis=1)['Switzerland',:]
     policy_df.columns = policy_df.columns.droplevel(level=0)
@@ -138,7 +147,9 @@ def run_policy(model,policy_df):
         pol_params['social distancing end %s' % group] = policy_df.loc['social distancing %s' % group]['end']
         pol_params['social distancing effectiveness %s' % group] = policy_df.loc['social distancing %s' % group][
             'effectiveness']
+    return pol_params
 
+def run_policy(model,pol_params):
     pol_df = model.run(params=pol_params,return_columns=output_lst)
     return pol_df
 
@@ -201,7 +212,8 @@ if __name__ == '__main__':
     clean_output(out_path)
     model,time_params,contact_cat = setup_model()
     base = run_base(model)
-    policy = run_policy(model,policy_df)
+    pol_params = set_policy()
+    policy = run_policy(model,pol_params)
     out_df = combine_runs(base,policy)
     create_output(out_df,time_params,contact_cat,create_graphs=True)
     end = time.time()

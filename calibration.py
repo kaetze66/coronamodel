@@ -23,6 +23,7 @@ class Calibrate:
         self.cal_bounds = []
         self.data_path = Path.cwd() / 'data'
         self.calib_path = Path.cwd() / 'calib'
+        self.base_data_error = 0
 
     def calibrate(self):
         def error_function(param_list):
@@ -31,6 +32,7 @@ class Calibrate:
             error = 0
             for var in self.out_vars:
                 error += sum((out[var]-self.data_dict[var])**2)
+            error = error / self.base_data_error
             print('Error:', error)
             return error
 
@@ -41,6 +43,12 @@ class Calibrate:
         guess_list = np.array([0.0125])
 
         #calculate the base data error for normalizing the error
+        base_df = self.model.run(return_columns=self.out_vars)
+        base_df = base_df.loc[self.return_ts]
+        error = 0
+        for var in self.out_vars:
+            error += sum((base_df[var] - self.data_dict[var]) ** 2)
+        self.base_data_error = error
 
 
         res = opt.minimize(error_function,guess_list,bounds=cal_bounds)
