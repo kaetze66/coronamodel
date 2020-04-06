@@ -2,8 +2,9 @@
 .SynologyWorkingDirectory/*
 desktop.ini
 # output folders for the data doesn't need to be added all the time
-output/*
+#output/*
 full_output/*
 full_results_output/*
 # website stuff is linked to Sandro's git
 predict-covid-website/*
+predict-covid-website
