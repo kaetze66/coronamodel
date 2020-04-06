@@ -23,6 +23,7 @@ class Calibrate:
         self.cal_bounds = []
         self.data_path = Path.cwd() / 'data'
         self.calib_path = Path.cwd() / 'calib'
+        self.set_path = Path.cwd() / 'settings'
         self.base_data_error = 0
 
     def calibrate(self):
@@ -50,8 +51,18 @@ class Calibrate:
             error += sum((base_df[var] - self.data_dict[var]) ** 2)
         self.base_data_error = error
 
+        #adding the policies for calibration
+        pol_params = model_age.set_policy()
+
+        self.model.set_components(params = pol_params)
 
         res = opt.minimize(error_function,guess_list,bounds=cal_bounds)
+
+        calib_params = dict(zip(self.cal_vars,res.x))
+        calib_df = pd.DataFrame([calib_params])
+        calib_df = calib_df.transpose()
+        calib_df.columns = ['calib settings']
+        calib_df.to_csv(self.set_path / 'calibration.csv')
 
         return res.x
 
