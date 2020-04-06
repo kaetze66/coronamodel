@@ -14,7 +14,7 @@ def prepare_jobs(step_size,policy_,output_lst,out_path):
     # code by Robin Schmid and Leon Zueger
     job_list = []
     for measure_ in ['sd', 'sq', 'sqd']:
-        for start_day in range(60, 270+steps_day, steps_day):
+        for start_day in range(90, 270+steps_day, steps_day):
             for duration in range(steps_day, 180+steps_day, steps_day):
                 end_day = start_day + duration
                 if end_day <= 270:

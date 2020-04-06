@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="798fe648-118b-4bb7-8c3c-5f0ae4c2de23" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/create_output_for_web.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_output_for_web.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output/00_base_results.csv" beforeDir="false" afterPath="$PROJECT_DIR$/output/00_base_results.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -224,7 +219,7 @@
       <workItem from="1585481127590" duration="25872000" />
       <workItem from="1585741078506" duration="3708000" />
       <workItem from="1585926458192" duration="62740000" />
-      <workItem from="1586183856700" duration="2136000" />
+      <workItem from="1586183856700" duration="2971000" />
     </task>
     <servers />
   </component>
