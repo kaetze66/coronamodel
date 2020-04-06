@@ -20,26 +20,36 @@ def prepare_jobs(step_size,policy_,output_lst,out_path):
                 if end_day <= 270:
                     if measure_ == 'sd':
                         for group in varcontrol.age_groups:
-                            policy_['self quarantine %s' % group]['SWITCH'] = 0
-                            policy_['social distancing %s' % group]['SWITCH'] = 1
-                            policy_['social distancing %s' % group]['start'] = start_day
-                            policy_['social distancing %s' % group]['end'] = end_day
+                            policy_['self quarantine policy SWITCH self %s' % group] = 0
+                            policy_['social distancing policy SWITCH self %s' % group] = 1
+                            policy_['social distancing start %s' % group] = start_day
+                            policy_['social distancing end %s' % group] = end_day
                     elif measure_ == 'sq':
                         for group in varcontrol.age_groups:
-                            policy_['self quarantine %s' % group]['SWITCH'] = 1
-                            policy_['social distancing %s' % group]['SWITCH'] = 0
-                            policy_['self quarantine %s' % group]['start'] = start_day
-                            policy_['self quarantine %s' % group]['end'] = end_day
+                            policy_['self quarantine policy SWITCH self %s' % group] = 1
+                            policy_['social distancing policy SWITCH self %s' % group] = 0
+                            policy_['self quarantine start %s' % group] = start_day
+                            policy_['self quarantine end %s' % group] = end_day
                     else:
                         for group in varcontrol.age_groups:
-                            policy_['self quarantine %s' % group]['SWITCH'] = 1
-                            policy_['social distancing %s' % group]['SWITCH'] = 1
-                            policy_['social distancing %s' % group]['start'] = start_day
-                            policy_['social distancing %s' % group]['end'] = end_day
-                            policy_['self quarantine %s' % group]['start'] = start_day
-                            policy_['self quarantine %s' % group]['end'] = end_day
+                            policy_['self quarantine policy SWITCH self %s' % group] = 1
+                            policy_['social distancing policy SWITCH self %s' % group] = 1
+                            policy_['social distancing start %s' % group] = start_day
+                            policy_['social distancing end %s' % group] = end_day
+                            policy_['self quarantine start %s' % group] = start_day
+                            policy_['self quarantine end %s' % group] = end_day
 
-                    pol_df = pd.DataFrame(policy_)
+                    # we should write the policy file into a more readable version
+                    # getting the names of the variables could also be hardcoded but if we expand this, this is going to be easier
+                    row_names = list(policy_.keys())
+                    row_names = [name.rsplit(' ',1)[0] for name in row_names]
+                    row_names = list(set(row_names))
+
+
+                    pol_df = pd.DataFrame(index=row_names,columns=varcontrol.age_groups)
+                    for key,val in policy_.items():
+                        row,col = key.rsplit(' ',1)
+                        pol_df.loc[row][col] = val
                     pol_df.to_csv(out_path / 'policy_{0}_{1}_{2}.csv'.format(measure_, start_day, end_day))
                     item = (policy_,(measure_,start_day,end_day),output_lst)
                     job_list.append(item)
@@ -68,8 +78,9 @@ if __name__ == '__main__':
     policy_df = mdl.read_policy()
     pol_params = mdl.set_policy(policy_df)
     job_list = prepare_jobs(10,pol_params,output_lst,full_out_path)
+    #warning, adjust the processes before you run it on your machine
     pool = pp.ProcessPool(nodes=5)
-    pool.map(worker,[job for job in job_list])
+    pool.map(worker,[job for job in job_list[:5]])
     pool.close()
     end = time.time()
     print('Total runtime:', end-start)
