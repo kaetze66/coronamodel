@@ -74,12 +74,12 @@ if __name__ == '__main__':
     model = mdl.setup_model()[0]
     output_lst = ['Infected asymptomatic', 'Infected symptomatic', 'Critical Cases', 'Diseased', 'Susceptible','Isolated','Recovered']
     base_df = mdl.run_base(model,output_lst)
-    base_df.to_csv(results_out_path / 'base.csv',header=False)
+    base_df.to_csv(results_out_path / 'results_base.csv',header=False)
     policy_df = mdl.read_policy()
     pol_params = mdl.set_policy(policy_df)
     job_list = prepare_jobs(10,pol_params,output_lst,full_out_path)
     #warning, adjust the processes before you run it on your machine
-    pool = pp.ProcessPool(nodes=5)
+    pool = pp.ProcessPool(nodes=32)
     prep = time.time()
     print('Preparation time:', prep-start)
     pool.map(worker,[job for job in job_list])
