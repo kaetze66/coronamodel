@@ -84,17 +84,23 @@ pol_dict = {}
 pol_dict['self quarantine'] = policy_df.loc['self quarantine'].tolist()
 pol_dict['social distancing'] = policy_df.loc['social distancing'].tolist()
 
+pol_switches = {}
+pol_switches['self quarantine policy SWITCH self'] = 0
+pol_switches['social distancing policy SWITCH self'] = 0
+
+model.set_components(params=pol_switches)
+
 base_df = model.run(return_columns=output_lst)
 base_df.to_csv(out_path / '00_base_results.csv')
 
-pol_params = {'self quarantine policy SWITCH self': pol_dict['self quarantine'][0],
-              'self quarantine start': pol_dict['self quarantine'][1],
-              'self quarantine end': pol_dict['self quarantine'][2],
-              'self quarantine effectiveness': pol_dict['self quarantine'][3],
-              'social distancing policy SWITCH self': pol_dict['social distancing'][0],
-              'social distancing start': pol_dict['social distancing'][1],
-              'social distancing end': pol_dict['social distancing'][2],
-              'social distancing effectiveness': pol_dict['social distancing'][3],
+pol_params = {'self quarantine policy SWITCH self': float(pol_dict['self quarantine'][0]),
+              'self quarantine start': float(pol_dict['self quarantine'][1]),
+              'self quarantine end': float(pol_dict['self quarantine'][2]),
+              'self quarantine effectiveness': float(pol_dict['self quarantine'][3]),
+              'social distancing policy SWITCH self': float(pol_dict['social distancing'][0]),
+              'social distancing start': float(pol_dict['social distancing'][1]),
+              'social distancing end': float(pol_dict['social distancing'][2]),
+              'social distancing effectiveness': float(pol_dict['social distancing'][3])
               }
 
 pol_df = model.run(params=pol_params,return_columns=output_lst)

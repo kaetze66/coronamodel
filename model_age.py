@@ -28,6 +28,7 @@ contact_df = pd.read_csv(data_path / 'cm_switzerland_sym.csv',index_col=0)
 control_df = pd.read_csv(set_path / 'infectioncontrol.csv',index_col=0)
 pop_data = pd.read_csv(data_path / 'pop_data.csv',index_col=0)
 
+
 # creating the various lists for use later
 time_lst = varcontrol.time_lst
 model_lst = varcontrol.agify_model()
@@ -37,10 +38,20 @@ stock_lst = varcontrol.agify_stock()
 flow_lst = varcontrol.agify_flow()
 endo_lst = varcontrol.agify_endo()
 control_lst = varcontrol.agify_infectioncontrol()
-output_lst = []
-output_lst.extend(stock_lst)
-output_lst.extend(flow_lst)
-output_lst.extend(endo_lst)
+
+def read_policy():
+    policy_df = pd.read_csv(set_path / 'policy.csv', index_col=0, header=[0, 1])
+    policy_df = policy_df.loc(axis=1)['Switzerland', :]
+    policy_df.columns = policy_df.columns.droplevel(level=0)
+    return policy_df
+
+def create_output_lst(stocks,flows,endos):
+    output_lst = []
+    output_lst.extend(stocks)
+    output_lst.extend(flows)
+    output_lst.extend(endos)
+    output_lst.append('infectivity per contact')
+    return output_lst
 
 # contact cat are the columns and rows in the contact matrices
 
@@ -85,9 +96,6 @@ def setup_model():
 
     contact_param = {}
 
-
-
-
     for group in contact_cat:
         contact_param['contacts per person normal self %s' % group[0]] = contact_df.loc[group[1]][group[1]]
 
@@ -113,6 +121,13 @@ def setup_model():
 
     model.set_components(params=pol_switches)
 
+    if set_path.joinpath('calibration.csv').exists():
+        calib_dict = {}
+        calib_df = pd.read_csv(set_path.joinpath('calibration.csv'),index_col=0)
+        for i,row in calib_df.iterrows():
+            calib_dict[row.name] = row['calib settings']
+        model.set_components(params=calib_dict)
+
     return model,time_params,contact_cat
 
 def clean_output(out_path):
@@ -124,16 +139,15 @@ def clean_output(out_path):
         pass
     out_path.mkdir(exist_ok=True)
 
-def run_base(model):
+def run_base(model,output_lst):
     base_df = model.run(return_columns=output_lst)
     base_df.to_csv(out_path / '00_base_results.csv')
     return base_df
 
-def set_policy():
-    policy_df = pd.read_csv(set_path / 'policy.csv', index_col=0, header=[0, 1])
+def set_policy(policy_df):
+
     # current policies available are: self quarantine, social distancing
-    policy_df = policy_df.loc(axis=1)['Switzerland',:]
-    policy_df.columns = policy_df.columns.droplevel(level=0)
+
 
     pol_params = {}
     for group in varcontrol.age_groups:
@@ -149,7 +163,8 @@ def set_policy():
             'effectiveness']
     return pol_params
 
-def run_policy(model,pol_params):
+def run_policy(model,pol_params,output_lst):
+    # here we need to just have one input for the multprocessing
     pol_df = model.run(params=pol_params,return_columns=output_lst)
     return pol_df
 
@@ -208,12 +223,14 @@ def create_output(out_df,time_params,contact_cat,create_graphs):
         plt.close()
 
 if __name__ == '__main__':
+    output_lst = create_output_lst(stock_lst,flow_lst,endo_lst)
     start = time.time()
     clean_output(out_path)
     model,time_params,contact_cat = setup_model()
-    base = run_base(model)
-    pol_params = set_policy()
-    policy = run_policy(model,pol_params)
+    base = run_base(model,output_lst)
+    policy_df = read_policy()
+    pol_params = set_policy(policy_df)
+    policy = run_policy(model,pol_params,output_lst)
     out_df = combine_runs(base,policy)
     create_output(out_df,time_params,contact_cat,create_graphs=True)
     end = time.time()
