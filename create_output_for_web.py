@@ -80,7 +80,9 @@ if __name__ == '__main__':
     job_list = prepare_jobs(10,pol_params,output_lst,full_out_path)
     #warning, adjust the processes before you run it on your machine
     pool = pp.ProcessPool(nodes=5)
-    pool.map(worker,[job for job in job_list[:5]])
+    prep = time.time()
+    print('Preparation time:', prep-start)
+    pool.map(worker,[job for job in job_list])
     pool.close()
     end = time.time()
     print('Total runtime:', end-start)
