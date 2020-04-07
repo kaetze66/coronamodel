@@ -51,7 +51,7 @@ def prepare_jobs(step_size,policy_,output_lst,out_path):
                         row,col = key.rsplit(' ',1)
                         pol_df.loc[row][col] = val
                     pol_df.to_csv(out_path / 'policy_{0}_{1}_{2}.csv'.format(measure_, start_day, end_day))
-                    item = (policy_,(measure_,start_day,end_day),output_lst)
+                    item = (policy_.copy(),(measure_,start_day,end_day),output_lst)
                     job_list.append(item)
     print('number of jobs:', len(job_list))
     return job_list
