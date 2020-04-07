@@ -9,12 +9,13 @@ import pandas as pd
 def prepare_jobs(step_size,policy_,output_lst,out_path):
     # WARNING: policy_ is now a dict, not a dataframe
     steps_day = step_size
+    initial_time = 90
     # writing the files for different measures and different durations of the measures
     # sd: social distancing, sq: self quarantine, sdq: social distancing AND self quarantine
     # code by Robin Schmid and Leon Zueger
     job_list = []
     for measure_ in ['sd', 'sq', 'sqd']:
-        for start_day in range(90, 270+steps_day, steps_day):
+        for start_day in range(initial_time, 270+steps_day, steps_day):
             for duration in range(steps_day, 180+steps_day, steps_day):
                 end_day = start_day + duration
                 if end_day <= 270:
@@ -50,8 +51,8 @@ def prepare_jobs(step_size,policy_,output_lst,out_path):
                     for key,val in policy_.items():
                         row,col = key.rsplit(' ',1)
                         pol_df.loc[row][col] = val
-                    pol_df.to_csv(out_path / 'policy_{0}_{1}_{2}.csv'.format(measure_, start_day, end_day))
-                    item = (policy_.copy(),(measure_,start_day,end_day),output_lst)
+                    pol_df.to_csv(out_path / 'policy_{0}_{1}_{2}.csv'.format(measure_, start_day-initial_time, end_day-initial_time))
+                    item = (policy_.copy(),(measure_,start_day-initial_time,end_day-initial_time),output_lst)
                     job_list.append(item)
     print('number of jobs:', len(job_list))
     return job_list
@@ -62,6 +63,7 @@ def worker(args):
     model = mdl.setup_model()[0]
     results_out_path = Path.cwd() / 'full_results_output'
     pol_out = mdl.run_policy(model,args[0],args[2])
+    pol_out = pol_out.reset_index(drop=True)
     pol_out.to_csv(results_out_path / 'results_{0}_{1}_{2}.csv'.format(args[1][0], args[1][1], args[1][2]), header=False)
     print('Result: {0}_{1}_{2}'.format(args[1][0], args[1][1], args[1][2]))
 
