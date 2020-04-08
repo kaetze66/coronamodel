@@ -2,8 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="798fe648-118b-4bb7-8c3c-5f0ae4c2de23" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/data/policy_dates.xlsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/create_output_for_web.py" beforeDir="false" afterPath="$PROJECT_DIR$/create_output_for_web.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/00_timesteps.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/00_timesteps.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings/policy.csv" beforeDir="false" afterPath="$PROJECT_DIR$/settings/policy.csv" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -62,7 +67,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.create_output_for_web">
+  <component name="RunManager" selected="Python.model_age">
     <configuration name="calibration" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="coronamodel" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -197,8 +202,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.create_output_for_web" />
         <item itemvalue="Python.model_age" />
+        <item itemvalue="Python.create_output_for_web" />
         <item itemvalue="Python.calibration" />
         <item itemvalue="Python.cm_sym" />
         <item itemvalue="Python.varcontrol" />
@@ -222,7 +227,10 @@
       <workItem from="1585926458192" duration="62740000" />
       <workItem from="1586183856700" duration="2971000" />
       <workItem from="1586255500393" duration="6355000" />
-      <workItem from="1586262714755" duration="292000" />
+      <workItem from="1586262714755" duration="323000" />
+      <workItem from="1586263162209" duration="3000" />
+      <workItem from="1586263844368" duration="2682000" />
+      <workItem from="1586275211225" duration="3653000" />
     </task>
     <servers />
   </component>
@@ -249,7 +257,7 @@
     </ignored-roots>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/coronamodel$model_age.coverage" NAME="model_age Coverage Results" MODIFIED="1586183868394" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/coronamodel$model_age.coverage" NAME="model_age Coverage Results" MODIFIED="1586275282673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/coronamodel$model_web.coverage" NAME="model_web Coverage Results" MODIFIED="1585556811484" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/coronamodel$calibration.coverage" NAME="calibration Coverage Results" MODIFIED="1586091149952" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/coronamodel$varcontrol.coverage" NAME="varcontrol Coverage Results" MODIFIED="1585924532038" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

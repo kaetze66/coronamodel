@@ -4,6 +4,7 @@ from pathlib import Path
 import varcontrol
 import time
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 def prepare_jobs(step_size,policy_,output_lst,out_path):
@@ -64,8 +65,24 @@ def worker(args):
     results_out_path = Path.cwd() / 'full_results_output'
     pol_out = mdl.run_policy(model,args[0],args[2])
     pol_out = pol_out.reset_index(drop=True)
-    pol_out.to_csv(results_out_path / 'results_{0}_{1}_{2}.csv'.format(args[1][0], args[1][1], args[1][2]), header=False)
+    pol_out.to_csv(results_out_path / 'results_{0}_{1}_{2}.csv'.format(args[1][0], args[1][1], args[1][2]))
     print('Result: {0}_{1}_{2}'.format(args[1][0], args[1][1], args[1][2]))
+
+def check_result(path):
+    """
+    from pathlib import Path
+    results_out_path = Path.cwd() / 'full_results_output'
+    import create_output_for_web
+    create_output_for_web.check_result(results_out_path)
+    """
+    file_list = list(path.glob('*'))[:20]
+    sum_df = pd.DataFrame()
+    for file in file_list:
+        df = pd.read_csv(file,index_col=0)
+        sum_df = pd.concat([sum_df,df],axis=1)
+    
+    ax = sum_df.plot(legend=False)
+    plt.savefig('test.png')
 
 if __name__ == '__main__':
     results_out_path = Path.cwd() / 'full_results_output'
@@ -76,10 +93,11 @@ if __name__ == '__main__':
     model = mdl.setup_model()[0]
     output_lst = ['Infected asymptomatic', 'Infected symptomatic', 'Critical Cases', 'Diseased', 'Susceptible','Isolated','Recovered']
     base_df = mdl.run_base(model,output_lst)
-    base_df.to_csv(results_out_path / 'results_base.csv',header=False)
+    base_df = base_df.reset_index(drop=True)
+    base_df.to_csv(results_out_path / 'results_base.csv')
     policy_df = mdl.read_policy()
     pol_params = mdl.set_policy(policy_df)
-    job_list = prepare_jobs(10,pol_params,output_lst,full_out_path)
+    job_list = prepare_jobs(1,pol_params,output_lst,full_out_path)
     #warning, adjust the processes before you run it on your machine
     pool = pp.ProcessPool(nodes=32)
     prep = time.time()
@@ -88,6 +106,7 @@ if __name__ == '__main__':
     pool.close()
     end = time.time()
     print('Total runtime:', end-start)
+    check_result(results_out_path)
 
 
 
