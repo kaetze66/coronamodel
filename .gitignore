@@ -8,3 +8,5 @@ full_results_output/*
 # website stuff is linked to Sandro's git
 predict-covid-website/*
 predict-covid-website
+website_sandro/*
+website_sandro
